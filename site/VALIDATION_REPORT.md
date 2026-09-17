@@ -37,8 +37,8 @@ PLB and window expectations depend on the observation. Undefined or infinite val
 
 These checks establish the listed numerical and interaction properties, not freedom from every possible browser, device or data issue. No biological model was retrained, no training target was selected, and no unrelated server process was signaled or modified. The export used one low-priority CPU thread and completed.
 
-## Private deployment
+## Public website
 
-The org repository and GitHub Pages site are configured private. The workflow checks both before uploading a deployment artifact and verifies every published file against the reviewed manifest. Access requires GitHub sign-in and read access to Tuan-hosts/Viewer; copying a link does not grant access. No new collaborators were invited by this release.
+The website and repository are public. No account is needed to view or download the published maps. The deployment checks file hashes before publishing. No source counts, fitted coefficients or scientific definitions changed when public access was enabled.
 
 Machine-readable checks: [numerical](GENOME_NUMERICAL_QA.json), [interactions](GENOME_INTERACTION_QA.json).

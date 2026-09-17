@@ -2,7 +2,7 @@
   "status": "VALIDATED",
   "maps": 21488,
   "chromosome_packets": 96,
-  "total_bytes": 213071897,
+  "total_bytes": 213094099,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -11,18 +11,18 @@
     },
     {
       "file": "site/app-v2.js",
-      "bytes": 29152,
-      "sha256": "b4f6eea4660cdd1abd499453bec09c4c4db2e32ad50da33ac3a8a90da24d4c04"
+      "bytes": 37342,
+      "sha256": "a4b34f1206be46cd1ff43d8ea010c3f54a814b9b1344c720238fd9e50a261536"
     },
     {
       "file": "site/comparison.js",
-      "bytes": 9891,
-      "sha256": "809f20fc5bbcf199ee9518e2d2da927797a12edf1067829110ce587c5839e988"
+      "bytes": 14304,
+      "sha256": "e75fcab200e26141abb46c1f95582afe3703c44acd623a96435d629e9ecaaf0d"
     },
     {
       "file": "site/core.js",
-      "bytes": 1844,
-      "sha256": "cd9a61ed2bdc1c65ad940982e79f77a3dafcc18ee92adbdefc6c196e3b79d8e6"
+      "bytes": 2637,
+      "sha256": "e2600580dd9bc22cbb94baffc8273460923097d70b2b66f1d9f4845333bef09c"
     },
     {
       "file": "site/data/chr10_10kb.bin",
@@ -516,8 +516,8 @@
     },
     {
       "file": "site/genome.js",
-      "bytes": 4606,
-      "sha256": "acd7c4886d161a755d17b91b13988196ca63c359b4e53fe72a044c7c341f0418"
+      "bytes": 6588,
+      "sha256": "3da6a94447b9d8eec17bc66b77c89522a55c9483f3e47e256a4aa2cae9cd1d6d"
     },
     {
       "file": "site/GENOME_INTERACTION_QA.json",
@@ -531,38 +531,38 @@
     },
     {
       "file": "site/halos.js",
-      "bytes": 25,
-      "sha256": "7c8009c131d2f3658274c6157910a8e6a5672165e52ce564dd9c37494fa1bd23"
+      "bytes": 26,
+      "sha256": "9eab3a13683d3a9fac22a79695ce41e6b2791cb3725502ddbac52853db5827d3"
     },
     {
       "file": "site/heatmap-v2.js",
-      "bytes": 3877,
-      "sha256": "3ddf8eb42fabe4c4e2cee03ab9b3c2857a36865f99aebb563d51d1834972bea2"
+      "bytes": 4803,
+      "sha256": "df3511ce22c8f21eb4d5b39c16c15629bae527cdb260a3d1b33783c5a1a0e9e4"
     },
     {
       "file": "site/index.html",
-      "bytes": 17084,
-      "sha256": "3ee4f994c5f6eca35c9b1cd71abb208e14d43b23db560b34aa8781918479977b"
+      "bytes": 22065,
+      "sha256": "148c8548f14591b09fe74c913a553efc247151a93818418afd8c2488e432170d"
     },
     {
       "file": "site/normalization.js",
-      "bytes": 5095,
-      "sha256": "ad6617ee98289a843189259ddbda43c3790776ffdefd9eec492f5df4ca5eb1e6"
+      "bytes": 7292,
+      "sha256": "e28236e39056e6cc887ccea61ff9202a67a2519e82d360fd282373a29ce1e1c2"
     },
     {
       "file": "site/README.md",
-      "bytes": 9790,
-      "sha256": "86b8bbcd068f259068857ae4b78df68be93af238b9052c140e84c13490062a4c"
+      "bytes": 5831,
+      "sha256": "d78195dcadf1a1a5933f057869c0eb6ade2a7f87554fcba035d6bdbfd9874875"
     },
     {
       "file": "site/style.css",
-      "bytes": 10082,
-      "sha256": "0fe078b3b6a528de8e1a18667c290ea758b13b9de91c80bb5b7fdd8b7467ffc2"
+      "bytes": 12859,
+      "sha256": "4e1df9aadc99de97663950c47724d1bb6e75d100b19e1560e11bb2fb69656a4d"
     },
     {
       "file": "site/VALIDATION_REPORT.md",
-      "bytes": 4521,
-      "sha256": "6b05fe6ef7e74d092f866eebfa4bfac895b8f71d6b80b461f5d9f48f317cb1bc"
+      "bytes": 4422,
+      "sha256": "dedb21fde6c39e21dc20df2711a68321c0181261d955156f4f9b72673dfea91e"
     }
   ]
 }

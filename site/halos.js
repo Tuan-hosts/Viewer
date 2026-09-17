@@ -1,1 +1,1 @@
-window.HITRAC_HALOS={};
+window.HITRAC_HALOS = {};

@@ -1,54 +1,69 @@
-# Viewer — live normalization and clipping comparison
+# K562 HiTrAC Viewer
 
-Open the private GitHub Pages link in current Chrome or Edge and sign in with a GitHub account that has access to Tuan-hosts/Viewer. Chromosome packets load on demand from this same private site and are checked against their SHA-256 hashes. No GPU, analytics, external data API or data upload is used. A downloaded copy requires a localhost web server; opening this genome-wide build directly as a file is not supported.
+Explore experimental contact maps and compare them with a distance and DNase baseline. The website is public and does not require a GitHub account.
 
-## Three maps
+## Using the viewer
 
-1. **Observed · raw reference:** original ln(1 + PET counts), kept as a reference.
-2. **Observed · processed:** the selected normalization, followed by finite-value clipping.
-3. **Baseline · log scale:** the frozen distance + endpoint-DNase prediction in its original ln(1 + PET counts) units. It is never divided by an expectation, inverse-transformed or logged again. Display clipping and the numerical color scale are shared with panel 2.
+1. Choose the bin width, window span, chromosome and region.
+2. Choose a normalization for the middle map.
+3. Adjust the minimum and maximum to see how clipping changes the map. These limits stay fixed when you switch views.
+4. Drag to pan, scroll to zoom, or choose **500-kb detail**. All three maps move together.
+5. Use **Copy view link** to share your exact settings, or **Export view PNG** to save the figure.
 
-Choose a chromosome/window, choose the normalization, then move the clipping minimum and maximum. Clipping limits stay fixed across normalization, log formulation, PLB rule, window, bin width and span changes. They are saved in browser storage and restored on reopening; explicit bounds in a shared view link take priority. If browser storage is unavailable, the view link still retains the limits. Only editing the limits or clicking Remove clipping changes them. These bounds modify the compared values, so the after-processing PCC is recalculated. Changing bin width, source-window span, zoom or pan updates the scored pairs. The raw reference score follows its own display maximum. Both scores account for color saturation as well as clipping; affine rescaling alone does not change Pearson. The main label states the bin width, source-window span and exact visible bin coordinates. “Remove clipping” includes the full finite range of both comparison maps. No training target or clipping threshold is selected by this viewer.
+The left map shows the original **ln(1 + PET counts)**. The middle map shows the selected normalization and clipping. The right map shows the fitted baseline, in its original log-count units. The baseline is not normalized or logged again.
 
-## Pearson correlation
+The 1-kb/4-Mb view contains 16 million cells and uses the most browser memory. Keep one Viewer tab open when working at that size. Data load only for the selected chromosome and bin width.
 
-The two main cards show:
+## Reading the correlations
 
-- **Raw reference vs baseline · displayed:** corr(clip(ln(1 + O), 0, raw maximum), displayed B). The right-hand baseline uses the same displayed values in both comparisons.
-- **Processed observed vs baseline · displayed:** corr(displayed T(O), displayed B). Both apply the chosen clipping bounds, then saturation at the comparison color-scale limits. T(O) is the selected observed transformation; B always remains the original signed log-map prediction. Normalization affects the observation only. When normalized modes are selected, this compares different representations: it describes the displayed patterns, not a like-for-like model accuracy score.
+Each score compares one observed map with the right-hand baseline. Scores use native bin values after the displayed clipping and color saturation, within the visible region. Mirrored pairs count once; the actual diagonal and supported zeros are included. Missing or nonfinite pairs are excluded, with the retained count shown.
 
-Both use the native bins intersecting the current visible viewport, with one contribution per common supported unique unordered pair, including actual diagonal counts and observed zeros when visible. Mirrored cells never double-count a contact. Partially visible edge bins are included; the label reports their exact bin boundaries. Before and after metrics follow the same visible domain. Returning to Full window restores the full-window score. Only jointly finite transformed values enter the processed comparison; infinities/undefined values are excluded before clipping, never moved to finite edge bins. Literal log ratios exclude zero observations, but finite zero or negative baseline predictions remain eligible. The retained pair count is shown. PCC is undefined for constant maps or fewer than two finite pairs. “What is being compared?” retains both original and selected-transformation unclipped PCCs and excluded-pair counts. No normalization with matching observed display bounds gives matching main scores. A score can change after nonlinear clipping, even if relatively few pairs are affected.
+With **No normalization** and matching display limits, the two scores are identical. Clipping can change Pearson because it changes the relative values. Zooming changes the pairs being compared. The original unclipped scores remain under **What is being compared?**
 
-The live calculation uses native Float32 map values after clipping and color saturation, before color quantization, not sampled screen pixels. Pearson is invariant to the positive affine scaling of these values into continuous white-to-red intensities. Zoom selects the scored pairs without recomputing normalization backgrounds. Thus the visible region can be smaller than the labeled source window. PLB and within-window expectations use the observed map; no expectation is applied to the baseline. Normalized-mode correlation is a descriptive cross-representation comparison. Different transformations and clipping bounds change the question being measured; an increased PCC alone does not establish improved learning.
+Normalization applies only to the middle map. In those modes, its correlation with the unnormalized baseline describes pattern similarity between different quantities; it is not a measure of normalized prediction accuracy. A clearer image or a higher displayed correlation does not establish better biological prediction.
 
-## Data and backgrounds
+## Five map settings
 
-There are **21,488 window maps** across chr1–22, X and Y: 1/2/5/10-kb bins and 1/2/4-Mb spans. At each bin width there are 5,372 complete chromosome-origin coordinate windows. Chromosome tails shorter than the selected span are excluded. These windows do not cover every possible cross-window pair. ChrY has raw counts but lacks the verified reference-support mask: its maps are explicitly unavailable for scoring, not treated as measured zeros. ChrM has no cis matrix in this source and no complete 1-Mb window. The other 23 chromosomes account for 21,092 maps.
+Write O for the observed PET count and E for its expected count. Methods 2–5 offer either ln(1 + O/E) or ln(O/E).
 
-Raw counts are aggregated before transformation. Actual diagonal counts and supported zeros are retained. Support is the existing reference-availability mask, not a complete mappability assessment. No ICE/KR, adaptive coarse-graining, interpolation or contact-map smoothing is applied. The published package contains 96 compressed chromosome/resolution packets rather than duplicating overlapping windows. Each packet includes enough neighboring counts for the PLB halo.
+| Setting | Expected count |
+| --- | --- |
+| No normalization | No E is used. Display ln(1 + O). |
+| Shared observed distance | Total raw PETs at each exact distance, divided by supported pair opportunities, including zeros. The same reference is used across windows. |
+| Shuffled endpoints | Re-pair observed endpoints within each chromosome in ten rounds. Average and pool the distance histograms, then divide by supported pair opportunities. This per-pixel conversion adapts the cLoops2 distance-frequency calculation. |
+| Local PLB | Move each endpoint by ±1 through ±5 bins. Average counts across unique eligible neighboring pairs, including zeros and actual diagonal counts. Exclude the central pair and reversed duplicates. Neighbors outside the window come from the same chromosome. |
+| Within-window distance | Average raw counts over supported pairs in nearby distance groups within the complete selected window, using the cooltools grouping ratio 1.03. Zooming does not change this expectation. |
 
-1. **No normalization:** ln(1 + O).
-2. **Shared observed distance:** raw PET sum / supported pair opportunities, including zeros, at each exact separation. All-chromosome descriptive reference, not the historical mean-log prediction baseline.
-3. **Shuffled endpoints:** ten chromosome-local endpoint-shuffling rounds, pooled distance histograms averaged over rounds, divided by supported pair opportunities. This per-pixel conversion is our map adaptation of cLoops2 estDis.
-4. **Dense local PLB adaptation:** shift each endpoint by −5…−1/+1…+5 whole bins. Average unique eligible unordered nearby pairs, including zeros and actual within-bin counts; exclude the central pair, reversed duplicates, unsupported and out-of-chromosome combinations. Chromosome halos extend beyond the displayed window. E = B/n or max(B,1)/n; n = 0 is undefined. This fixed-bin adaptation follows the local-comparison idea, not the complete cLoops loop caller.
-5. **Within-window distance:** raw-count means in cooltools nearby-distance groups (ratio 1.03), calculated over the complete window; zoom does not change E. Akita-inspired without its complete balancing/coarse-graining/interpolation/clipping/smoothing pipeline.
+For local PLB, B is the sum of neighboring counts and n is the number of eligible neighbors. The unmodified expectation is B/n. The stabilized option is max(B,1)/n; the page reports how often that floor is used. If n = 0, E is undefined. This is a fixed-bin adaptation of the cLoops local-background idea, not the complete loop caller.
 
-Methods 2–5 offer ln(1 + O/E) and literal ln(O/E). Positive O with E = 0 gives +∞; O = E = 0 is undefined; O = 0 with E > 0 gives −∞ in the literal formulation. Nonfinite cells render white and are separately counted. White-to-red color scales are explicitly labeled.
+The within-window method is Akita-inspired. It does not reproduce Akita’s balancing, coarse-graining, interpolation, clipping or smoothing.
 
-## Frozen baseline
+For ln(O/E), a zero observation with E > 0 gives −∞; a positive observation with E = 0 gives +∞; 0/0 is undefined. These values remain nonfinite and render white. They are not pushed into a finite clipping bin. For ln(1 + O/E), O = E gives ln(2), not zero.
 
-B = distance intercept + fitted symmetric DNase-endpoint adjustment. The spline/ridge model was fitted outside chr3/chr4; its exact source, fitting counts and coefficients remain in extension.js. The 1-Mb views reuse the corresponding frozen 2-Mb model without refitting. Normalization neither retrains nor transforms this model. Newly displayed chromosomes include baseline fitting regions; their correlations are descriptive, not newly held-out validation. The old chr3/chr4 comparisons retain the same data and coefficients. B is already its fitted prediction of ln(1 + PET counts). DNase coverage can further restrict its available pairs. Original signed baseline values remain available on hover and in the explicitly labeled unclipped metric in the details.
+## Data and baseline
 
-## Verification and exports
+The viewer contains **21,488 maps**: 1/2/5/10-kb bins and 1/2/4-Mb windows across chr1–22, X and Y. Windows start at the chromosome origin and do not overlap at a given span. Incomplete chromosome tails are excluded.
 
-See [the genome-wide validation report](VALIDATION_REPORT.md). All 21,488 map summaries and 96 packet checksums passed. All 2,712 existing chr3/chr4 maps retain exact counts, support and Float32 DNase features. Source checks include a fresh raw .hic query on each chromosome, coarse-count conservation and actual diagonal preservation. The numerical checks cover 2,976 method/formulation cases and 1,440 independently enumerated PLB neighborhoods. Browser/controller checks cover asynchronous switching, preserved clipping, undefined scores, zoom and displayed-value PCC.
+Raw integer counts are aggregated before transformation. The actual diagonal is retained. No ICE/KR, adaptive coarse-graining or map smoothing is applied. White is the minimum color; red is the maximum. Missing values also appear white and are reported separately.
 
-Download current settings to retain the chosen window, bounds, normalization, viewport and numerical correlations. Export view PNG captures all three panels. Copy view link retains the same settings. The unclipped metric remains available under “What is being compared?”; normalizing only the observation produces a descriptive cross-representation correlation.
+ChrY lacks the verified reference-support mask, so its counts are retained but its maps cannot be scored. ChrM has no cis matrix in this source and no complete 1-Mb window. The mask describes reference availability, not a comprehensive mappability assessment.
 
-## Private sharing
+The baseline combines a distance intercept with symmetric DNase adjustments at both endpoints. It was fitted on 128 windows outside chr3/chr4. The 1-Mb views reuse the corresponding 2-Mb coefficients. Other chromosomes include baseline fitting regions, so genome-wide scores are descriptive rather than a new held-out test. Shared normalization references use all chromosomes; PLB and within-window backgrounds use the observed map.
 
-The deployment is a private GitHub Pages project site owned by **Tuan-hosts**, not a public Pages site. Viewers sign in with GitHub and need read access to the private repository. Copying the link does not grant access. No new collaborators were invited by this release. Do not make the repository or Pages site public to share it. The workflow refuses deployment if either visibility check fails.
+See the [validation report](VALIDATION_REPORT.md) for checks and limitations.
 
-The original personal repository and historical data remain preserved. This release does not change training, fitted coefficients or normalization reference curves.
+## Running a local copy
 
-Sources: [cLoops2 estDis](https://github.com/YaqiangCao/cLoops2/blob/e7febf79ea7e5823c12f982bdb34497bab56b330/cLoops2/estDis.py), [original cLoops PLB](https://academic.oup.com/bioinformatics/article/36/3/666/5553098), [cooltools distance grouping](https://github.com/open2c/cooltools/blob/v0.7.1/cooltools/lib/numutils.py).
+From the repository directory, run:
+
+```sh
+python -m http.server 8000 --bind 127.0.0.1 --directory site
+```
+
+Then open http://127.0.0.1:8000. Opening index.html directly as a file will not load the chromosome packets.
+
+## Sources
+
+- [cLoops2 endpoint shuffling](https://github.com/YaqiangCao/cLoops2/blob/e7febf79ea7e5823c12f982bdb34497bab56b330/cLoops2/estDis.py)
+- [Original cLoops local background](https://academic.oup.com/bioinformatics/article/36/3/666/5553098)
+- [cooltools distance grouping](https://github.com/open2c/cooltools/blob/v0.7.1/cooltools/lib/numutils.py)

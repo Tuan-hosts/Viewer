@@ -1,64 +1,512 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="style.css"></head>
-<body>
-<header><div><div class="eyebrow">ACTIVEHITRAC / EXPERIMENTAL MAPS</div><h1>Viewer<span>K562</span></h1><p>Explore observed-map normalization alongside the original distance + DNase log-map baseline.</p></div><div class="coverage">chr1–22 + X + Y<strong>21,488 maps · 12 geometries</strong><span>Native counts. Actual diagonal.</span></div></header>
-<main>
-<section class="navigation" aria-label="Choose a contact map">
- <label>Bin width<select id="bin"><option value="1">1 kb</option><option value="2">2 kb</option><option value="5">5 kb</option><option value="10">10 kb</option></select></label>
- <label>Window span<select id="span"><option value="1">1 Mb</option><option value="2" selected>2 Mb</option><option value="4">4 Mb</option></select></label>
- <label>Chromosome<select id="chrom"><option>chr1</option><option>chr2</option><option>chr3</option><option selected>chr4</option><option>chr5</option><option>chr6</option><option>chr7</option><option>chr8</option><option>chr9</option><option>chr10</option><option>chr11</option><option>chr12</option><option>chr13</option><option>chr14</option><option>chr15</option><option>chr16</option><option>chr17</option><option>chr18</option><option>chr19</option><option>chr20</option><option>chr21</option><option>chr22</option><option>chrX</option><option>chrY</option></select></label>
- <div class="window-picker"><label>Genomic window<select id="window"></select></label><div class="steppers"><button id="prev" aria-label="Previous window">←</button><button id="next" aria-label="Next window">→</button></div></div>
-</section>
-<section class="normalization-controls" aria-label="Normalization settings">
-<label>Normalization · observed map only<select id="method"><option value="raw">1 · No normalization</option><option value="observed">2 · Shared observed distance</option><option value="shuffled">3 · Shuffled endpoints</option><option value="plb">4 · Local PLB adaptation</option><option value="window">5 · Within-window distance (Akita-inspired)</option></select></label>
-<label>Log formulation<select id="formulation"><option value="log1p">ln(1 + O/E) · zero-safe</option><option value="ratio">ln(O/E) · zeros are −∞</option></select></label>
-<label id="plbControl">PLB empty-background rule<select id="plbMode"><option value="stable">Stabilized · max(B, 1) / n</option><option value="raw">Unmodified · B / n</option></select></label>
-</section><p id="methodNote" class="method-note"></p>
-<p class="comparison-hint">Normalization changes only the middle map. The baseline stays in its original natural-log scale. Clipping applies to both comparison maps. Your limits stay fixed when switching settings and are remembered in this browser; use Remove clipping to reset them. Pearson follows the visible region.</p>
-<section class="controls" aria-label="Clipping controls">
- <div class="bound"><label for="minNumber">Clip minimum <span>ln units</span></label><input id="minNumber" type="number" step="0.01" value="0"><input id="minRange" type="range" min="-2" max="15" step="0.01" value="0" aria-label="Clipping minimum"></div>
- <div class="bound"><label for="maxNumber">Clip maximum <span>ln units</span></label><input id="maxNumber" type="number" step="0.01" value="10"><input id="maxRange" type="range" min="-2" max="15" step="0.01" value="10" aria-label="Clipping maximum"></div>
- <div class="scale-controls"><label>Comparison color scale<select id="scale"><option value="stretch">Use clipping bounds</option><option value="shared">Use full transformation range</option></select></label><button id="resetBounds">Remove clipping</button></div>
-</section>
-<div id="error" role="alert" hidden></div>
-<section class="location-line"><div><h2 id="region">Loading maps…</h2><p id="detail" aria-live="polite">Loading verified K562 counts.</p></div><div class="zoom-controls"><button id="fit">Full window</button><button id="zoom500">500-kb detail</button><label>Zoom<select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option><option value="32">32×</option></select></label><button id="export">Export view PNG</button></div></section>
-<div class="reference-control"><label for="rawMax">Raw reference color maximum <input id="rawMax" type="number" min="0.01" step="0.1" value="12"></label><button id="rawReset">Reset raw scale</button><span>First map only. Its Pearson score follows this display limit.</span></div>
-<div class="maps">
- <section class="map-panel"><div class="map-title"><h3>Observed · raw reference</h3><span>Original ln(1 + counts)</span></div><div class="map-frame"><div class="y-label">Genomic position (Mb)</div><div class="y-ticks" id="leftY"></div><canvas id="original" aria-label="Original experimental contact map. Drag to pan; scroll to zoom." tabindex="0"></canvas></div><div class="x-ticks" id="leftX"></div><div class="axis-name">Genomic position (Mb)</div><div class="legend"><span id="leftMin">0</span><div></div><span id="leftMax">0</span></div><div class="legend-label">ln(1 + PET counts)</div></section>
- <section class="map-panel"><div class="map-title"><h3 id="processedTitle">Processed</h3><span id="clipEquation">clip(T, minimum, maximum)</span></div><div class="map-frame"><div class="y-label">Genomic position (Mb)</div><div class="y-ticks" id="rightY"></div><canvas id="clipped" aria-label="Clipped experimental contact map. Drag to pan; scroll to zoom." tabindex="0"></canvas></div><div class="x-ticks" id="rightX"></div><div class="axis-name">Genomic position (Mb)</div><div class="legend"><span id="rightMin">0</span><div></div><span id="rightMax">0</span></div><div class="legend-label" id="processedUnits">ln(1 + PET counts), after clipping</div></section>
-<section class="map-panel"><div class="map-title"><h3>Baseline · log scale</h3><span>Distance + DNase · no normalization</span></div><div class="map-frame"><div class="y-label">Genomic position (Mb)</div><div class="y-ticks" id="baseY"></div><canvas id="baseline" aria-label="Distance and DNase baseline prediction; linked zoom and pan" tabindex="0"></canvas></div><div class="x-ticks" id="baseX"></div><div class="axis-name">Genomic position (Mb)</div><div class="legend"><span id="baseMin">0</span><div></div><span id="baseMax">0</span></div><div class="legend-label" id="baselineUnits">Predicted ln(1 + PET counts), after display clipping</div></section>
-</div>
-<section class="correlation-section" aria-label="Baseline versus observed Pearson correlation">
-<h3>Visible maps · Pearson correlation</h3><p id="pccGeometry" class="pcc-geometry">Loading visible region…</p>
-<div class="correlation-cards" aria-live="polite">
-<div><span>Raw reference vs baseline · displayed</span><strong id="pccBefore">—</strong><small id="pccBeforePairs">Original signed log-map prediction</small></div>
-<div><span>Processed observed vs baseline · displayed</span><strong id="pccAfter">—</strong><small id="pccAfterPairs">Selected transformation</small></div>
-
-</div><p id="pccNote" class="note"></p>
-<details class="comparison-details"><summary>What is being compared?</summary><p>Left score: the first map versus the right-hand baseline, using the first map’s 0-to-maximum display bounds. Right score: the middle map versus that same displayed baseline. Both account for clipping and color saturation. With No normalization and matching observed display bounds, the scores match. Unclipped correlations are retained below. Normalization applies only to the observation. In normalized modes, this is a correlation between different representations, not a like-for-like prediction accuracy score. Both use the native bins currently visible at the selected resolution. Zooming and panning change the scored region; changing bin width or source-window span loads the corresponding data. Mirrored pairs count once, including the actual diagonal when visible. Nonfinite and missing pairs are excluded. Changing a display limit updates the corresponding score; affine color rescaling alone leaves Pearson unchanged.</p><p id="pccUnclipped"></p></details>
-</section>
-<div class="interaction-hint"><span>Drag any map to pan · scroll to zoom · hover or tap to inspect a bin pair</span><span>Zoom in to resolve native cells; overview rendering samples screen pixels without map smoothing.</span></div>
-<div id="pixel" class="pixel" aria-live="polite">Hover over any map to read the actual PET count and before/after values.</div>
-<p class="whole-window-label">Whole-window clipping summary and distribution</p>
-<section class="impact" aria-label="Effect of clipping on supported unique pairs"><div><span>Pairs changed</span><strong id="changed">—</strong><small id="changedPositive">—</small></div><div><span>Below minimum</span><strong id="below">—</strong><small id="belowCount">—</small></div><div><span>Above maximum</span><strong id="above">—</strong><small id="aboveCount">—</small></div><div><span>Clipping distortion</span><strong id="mse">—</strong><small>Mean squared change in ln units²</small></div></section>
-<div id="nonfinite" class="nonfinite" aria-live="polite"></div>
-<section class="distribution"><div><h3>Value distribution</h3><p>Selected transformation before clipping. Percentages use finite values; nonfinite categories are reported separately.</p></div><label>Show<select id="histMode"><option value="positive">Nonzero-count pairs</option><option value="all">All supported pairs</option></select></label><svg id="histogram" role="img" aria-label="Distribution of original log counts with clipping bounds"></svg></section>
-<p id="scaleNote" class="note"></p>
-<details><summary>Methods, background definitions and private sharing</summary>
-<p><strong>1 · No normalization:</strong> ln(1 + O), where O is the raw PET count. All methods start from the same raw counts aggregated before transformation. Actual diagonal counts and supported zeros remain included. No ICE/KR, adaptive coarse-graining or contact-map smoothing is used.</p>
-<p><strong>2 · Shared observed distance:</strong> E(d) = all-chromosome raw PET total at separation d / supported unique pair opportunities at d, including zeros. This is a raw-count expectation, distinct from a baseline fitted to mean ln(1 + counts).</p>
-<p><strong>3 · Shuffled endpoints:</strong> endpoints are re-paired within each chromosome in ten seeded rounds using the pinned cLoops2 estDis implementation. Shuffled distance histograms are pooled and divided by supported pair opportunities. This per-pixel conversion is our map adaptation of the green distance-frequency graph.</p>
-<p><strong>4 · Dense PLB adaptation:</strong> each endpoint shifts by −5…−1 or +1…+5 output bins. Average counts across unique eligible nearby unordered pairs; retain zeros and actual diagonal counts, exclude the central pair and reversed duplicates. Chromosome halos supply neighbors outside the displayed window. The stabilized option uses E = max(B, 1)/n; the unmodified option uses E = B/n. No neighbors means undefined. This fixed-bin construction follows the original cLoops local-background idea; it is not the complete loop caller.</p>
-<p><strong>5 · Within-window distance:</strong> raw-count means over supported pairs, using cooltools nearby-distance groups (ratio 1.03). Computed over the entire selected 1-, 2- or 4-Mb window, then retained when zooming. Akita-inspired, without Akita’s balancing, coarse-graining, interpolation, clipping or smoothing.</p>
-<p>Shared normalization references are descriptive and include inspected chromosomes. PLB and within-window backgrounds depend on the observed map. They are not supplied to the predictive baseline. The third panel retains the frozen endpoint spline/ridge baseline in its original log-map units, with display clipping only. No expected background is applied to it, and it is not logged a second time. Its color scale matches the middle observed panel. The first panel keeps the original observed log counts as a reference.</p>
-<p>Each model uses a distance intercept plus a symmetric adjustment for DNase at both endpoints. Existing 1-, 2- and 5-kb models are from the completed large-window campaign; 10-kb models use the same fitting windows. The 1-Mb views reuse the frozen 2-Mb model coefficients at the same bin width; they are evaluations on smaller regions, not newly fitted models. None fits chr3/chr4 contacts. Other displayed chromosomes include baseline fitting chromosomes; these exploratory correlations are not a new held-out evaluation. A baseline cell is unavailable if either endpoint lacks complete DNase coverage. Baseline metrics use common supported pairs, include zeros and the actual diagonal, and are recalculated after the selected clipping in the comparison card.</p>
-<p>For ln(O/E), zero counts with E &gt; 0 remain −∞. Positive counts with E = 0 are +∞; 0/0 or unavailable expectations are undefined. These categories render white and are counted separately. They are never silently moved into finite clipping bins. For ln(1 + O/E), O = E corresponds to ln(2), not zero.</p>
-<p>There are 5,372 complete coordinate windows across all 24 nuclear chromosomes, at each of four bin widths: 21,488 maps. ChrY lacks the verified DNA-reference support and is explicitly masked; chrM has no cis matrix and no complete 1-Mb window. Incomplete chromosome tails are excluded. Support is the existing reference-availability mask, not a full mappability assessment. Overview rendering samples native cells without smoothing; zoom to resolve individual bins.</p>
-<p><strong>Displayed PCC:</strong> The first score compares clip(ln(1 + O), 0, raw maximum) with the displayed baseline. The second compares the displayed selected transformation T(O) with that same baseline. The middle and right maps apply the chosen minimum/maximum, then saturation at their color-scale limits. Native values after these operations determine the scores; positive affine color rescaling does not change Pearson. No normalization with matching observed display bounds gives identical scores. The original unclipped corr(ln(1 + O), B) and the selected-transformation unclipped correlation remain under “What is being compared?” and in settings exports. B is the original signed log-map prediction, never divided by E or logged again. In normalized modes the middle map and baseline represent different quantities; their correlation describes the displayed patterns, not normalized prediction accuracy. Both scores use common supported unique unordered pairs intersecting the visible viewport. Mirrored pairs count once, partially visible edge bins and the actual diagonal are included. Nonfinite values are excluded before clipping, never converted to finite boundary values. Each score reports its retained pair count. Literal ln ratios exclude zero observations. Native Float32 map values are used, not sampled screen pixels or quantized colors. PCC is undefined for constant maps or fewer than two pairs. Normalization backgrounds remain defined on the complete selected window or chromosome; zoom only changes the scored region.</p>
-<p><strong>Sharing:</strong> copy the view link to preserve the window, normalization, bounds and zoom. A localhost link works only on this computer. A downloaded genome-wide copy requires a localhost web server. The shared hosted link requires repository access; copying the link does not grant access. The private GitHub Pages site requires sign-in with repository access. It loads chromosome data from the same private site and makes no analytics or data-upload requests.</p>
-<p><a href="https://github.com/YaqiangCao/cLoops2/blob/e7febf79ea7e5823c12f982bdb34497bab56b330/cLoops2/estDis.py" target="_blank" rel="noopener">Shuffling source</a> · <a href="https://academic.oup.com/bioinformatics/article/36/3/666/5553098" target="_blank" rel="noopener">Original cLoops PLB</a> · <a href="https://github.com/open2c/cooltools/blob/v0.7.1/cooltools/lib/numutils.py" target="_blank" rel="noopener">Distance grouping</a></p>
-<p><a href="README.md">Methods and verification</a> · <a href="VALIDATION_REPORT.md">Genome-wide validation</a> · <button id="saveSettings">Download current settings</button> · <button id="copyLink">Copy view link</button></p>
-</details>
-</main><footer>ActiveHiTRAC · K562 experimental counts · 17 September 2026</footer>
-<script src="data/manifest.js"></script><script src="extension.js"></script><script src="halos.js"></script><script src="genome.js?v=20260917-genome"></script><script src="comparison.js?v=20260917-genome"></script><script src="core.js"></script><script src="normalization.js"></script><script src="heatmap-v2.js"></script><script src="app-v2.js?v=20260917-genome"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Viewer · K562 HiTrAC</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <div class="eyebrow">ACTIVEHITRAC / EXPERIMENTAL MAPS</div>
+        <h1>Viewer<span>K562</span></h1>
+        <p>Compare K562 HiTrAC contacts with a distance and DNase baseline.</p>
+      </div>
+      <div class="coverage">
+        chr1–22 + X + Y<strong>21,488 maps · 12 geometries</strong
+        ><span>Native counts. Actual diagonal.</span>
+      </div>
+    </header>
+    <main>
+      <section class="navigation" aria-label="Choose a contact map">
+        <label
+          >Bin width<select id="bin">
+            <option value="1">1 kb</option>
+            <option value="2">2 kb</option>
+            <option value="5">5 kb</option>
+            <option value="10">10 kb</option>
+          </select></label
+        >
+        <label
+          >Window span<select id="span">
+            <option value="1">1 Mb</option>
+            <option value="2" selected>2 Mb</option>
+            <option value="4">4 Mb</option>
+          </select></label
+        >
+        <label
+          >Chromosome<select id="chrom">
+            <option>chr1</option>
+            <option>chr2</option>
+            <option>chr3</option>
+            <option selected>chr4</option>
+            <option>chr5</option>
+            <option>chr6</option>
+            <option>chr7</option>
+            <option>chr8</option>
+            <option>chr9</option>
+            <option>chr10</option>
+            <option>chr11</option>
+            <option>chr12</option>
+            <option>chr13</option>
+            <option>chr14</option>
+            <option>chr15</option>
+            <option>chr16</option>
+            <option>chr17</option>
+            <option>chr18</option>
+            <option>chr19</option>
+            <option>chr20</option>
+            <option>chr21</option>
+            <option>chr22</option>
+            <option>chrX</option>
+            <option>chrY</option>
+          </select></label
+        >
+        <div class="window-picker">
+          <label>Genomic window<select id="window"></select></label>
+          <div class="steppers">
+            <button id="prev" aria-label="Previous window">←</button
+            ><button id="next" aria-label="Next window">→</button>
+          </div>
+        </div>
+      </section>
+      <section
+        class="normalization-controls"
+        aria-label="Normalization settings"
+      >
+        <label
+          >Normalization · observed map only<select id="method">
+            <option value="raw">1 · No normalization</option>
+            <option value="observed">2 · Shared observed distance</option>
+            <option value="shuffled">3 · Shuffled endpoints</option>
+            <option value="plb">4 · Local PLB adaptation</option>
+            <option value="window">
+              5 · Within-window distance (Akita-inspired)
+            </option>
+          </select></label
+        >
+        <label
+          >Log formulation<select id="formulation">
+            <option value="log1p">ln(1 + O/E) · zero-safe</option>
+            <option value="ratio">ln(O/E) · zeros are −∞</option>
+          </select></label
+        >
+        <label id="plbControl"
+          >PLB empty-background rule<select id="plbMode">
+            <option value="stable">Stabilized · max(B, 1) / n</option>
+            <option value="raw">Unmodified · B / n</option>
+          </select></label
+        >
+      </section>
+      <p id="methodNote" class="method-note"></p>
+      <p class="comparison-hint">
+        Choose a region, then adjust the middle map’s normalization and
+        clipping. The baseline stays in log-count units. Clipping limits are
+        saved when you switch views. Pearson uses the visible region and the
+        displayed values.
+      </p>
+      <section class="controls" aria-label="Clipping controls">
+        <div class="bound">
+          <label for="minNumber">Clip minimum <span>ln units</span></label
+          ><input id="minNumber" type="number" step="0.01" value="0" /><input
+            id="minRange"
+            type="range"
+            min="-2"
+            max="15"
+            step="0.01"
+            value="0"
+            aria-label="Clipping minimum"
+          />
+        </div>
+        <div class="bound">
+          <label for="maxNumber">Clip maximum <span>ln units</span></label
+          ><input id="maxNumber" type="number" step="0.01" value="10" /><input
+            id="maxRange"
+            type="range"
+            min="-2"
+            max="15"
+            step="0.01"
+            value="10"
+            aria-label="Clipping maximum"
+          />
+        </div>
+        <div class="scale-controls">
+          <label
+            >Comparison color scale<select id="scale">
+              <option value="stretch">Use clipping bounds</option>
+              <option value="shared">Use full transformation range</option>
+            </select></label
+          ><button id="resetBounds">Remove clipping</button>
+        </div>
+      </section>
+      <div id="error" role="alert" hidden></div>
+      <section class="location-line">
+        <div>
+          <h2 id="region">Loading maps…</h2>
+          <p id="detail" aria-live="polite">Loading verified K562 counts.</p>
+        </div>
+        <div class="zoom-controls">
+          <button id="fit">Full window</button
+          ><button id="zoom500">500-kb detail</button
+          ><label
+            >Zoom<select id="zoom">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="4">4×</option>
+              <option value="8">8×</option>
+              <option value="16">16×</option>
+              <option value="32">32×</option>
+            </select></label
+          ><button id="export">Export view PNG</button>
+        </div>
+      </section>
+      <div class="reference-control">
+        <label for="rawMax"
+          >Raw reference color maximum
+          <input
+            id="rawMax"
+            type="number"
+            min="0.01"
+            step="0.1"
+            value="12" /></label
+        ><button id="rawReset">Reset raw scale</button
+        ><span
+          >First map only. Its Pearson score follows this display limit.</span
+        >
+      </div>
+      <div class="maps">
+        <section class="map-panel">
+          <div class="map-title">
+            <h3>Observed · raw reference</h3>
+            <span>Original ln(1 + counts)</span>
+          </div>
+          <div class="map-frame">
+            <div class="y-label">Genomic position (Mb)</div>
+            <div class="y-ticks" id="leftY"></div>
+            <canvas
+              id="original"
+              aria-label="Original experimental contact map. Drag to pan; scroll to zoom."
+              tabindex="0"
+            ></canvas>
+          </div>
+          <div class="x-ticks" id="leftX"></div>
+          <div class="axis-name">Genomic position (Mb)</div>
+          <div class="legend">
+            <span id="leftMin">0</span>
+            <div></div>
+            <span id="leftMax">0</span>
+          </div>
+          <div class="legend-label">ln(1 + PET counts)</div>
+        </section>
+        <section class="map-panel">
+          <div class="map-title">
+            <h3 id="processedTitle">Processed</h3>
+            <span id="clipEquation">clip(T, minimum, maximum)</span>
+          </div>
+          <div class="map-frame">
+            <div class="y-label">Genomic position (Mb)</div>
+            <div class="y-ticks" id="rightY"></div>
+            <canvas
+              id="clipped"
+              aria-label="Clipped experimental contact map. Drag to pan; scroll to zoom."
+              tabindex="0"
+            ></canvas>
+          </div>
+          <div class="x-ticks" id="rightX"></div>
+          <div class="axis-name">Genomic position (Mb)</div>
+          <div class="legend">
+            <span id="rightMin">0</span>
+            <div></div>
+            <span id="rightMax">0</span>
+          </div>
+          <div class="legend-label" id="processedUnits">
+            ln(1 + PET counts), after clipping
+          </div>
+        </section>
+        <section class="map-panel">
+          <div class="map-title">
+            <h3>Baseline · log scale</h3>
+            <span>Distance + DNase · no normalization</span>
+          </div>
+          <div class="map-frame">
+            <div class="y-label">Genomic position (Mb)</div>
+            <div class="y-ticks" id="baseY"></div>
+            <canvas
+              id="baseline"
+              aria-label="Distance and DNase baseline prediction; linked zoom and pan"
+              tabindex="0"
+            ></canvas>
+          </div>
+          <div class="x-ticks" id="baseX"></div>
+          <div class="axis-name">Genomic position (Mb)</div>
+          <div class="legend">
+            <span id="baseMin">0</span>
+            <div></div>
+            <span id="baseMax">0</span>
+          </div>
+          <div class="legend-label" id="baselineUnits">
+            Predicted ln(1 + PET counts), after display clipping
+          </div>
+        </section>
+      </div>
+      <section
+        class="correlation-section"
+        aria-label="Baseline versus observed Pearson correlation"
+      >
+        <h3>Visible maps · Pearson correlation</h3>
+        <p id="pccGeometry" class="pcc-geometry">Loading visible region…</p>
+        <div class="correlation-cards" aria-live="polite">
+          <div>
+            <span>Raw reference vs baseline · displayed</span
+            ><strong id="pccBefore">—</strong
+            ><small id="pccBeforePairs"
+              >Original signed log-map prediction</small
+            >
+          </div>
+          <div>
+            <span>Processed observed vs baseline · displayed</span
+            ><strong id="pccAfter">—</strong
+            ><small id="pccAfterPairs">Selected transformation</small>
+          </div>
+        </div>
+        <p id="pccNote" class="note"></p>
+        <details class="comparison-details">
+          <summary>What is being compared?</summary>
+          <p>
+            Left score: the first map versus the right-hand baseline, using the
+            first map’s 0-to-maximum display bounds. Right score: the middle map
+            versus that same displayed baseline. Both account for clipping and
+            color saturation. With No normalization and matching observed
+            display bounds, the scores match. Unclipped correlations are
+            retained below. Normalization applies only to the observation. In
+            normalized modes, this is a correlation between different
+            representations, not a like-for-like prediction accuracy score. Both
+            use the native bins currently visible at the selected resolution.
+            Zooming and panning change the scored region; changing bin width or
+            source-window span loads the corresponding data. Mirrored pairs
+            count once, including the actual diagonal when visible. Nonfinite
+            and missing pairs are excluded. Changing a display limit updates the
+            corresponding score; affine color rescaling alone leaves Pearson
+            unchanged.
+          </p>
+          <p id="pccUnclipped"></p>
+        </details>
+      </section>
+      <div class="interaction-hint">
+        <span
+          >Drag any map to pan · scroll to zoom · hover or tap to inspect a bin
+          pair</span
+        ><span
+          >Zoom in to resolve native cells; overview rendering samples screen
+          pixels without map smoothing.</span
+        >
+      </div>
+      <div id="pixel" class="pixel" aria-live="polite">
+        Hover over any map to read the actual PET count and before/after values.
+      </div>
+      <p class="whole-window-label">
+        Whole-window clipping summary and distribution
+      </p>
+      <section
+        class="impact"
+        aria-label="Effect of clipping on supported unique pairs"
+      >
+        <div>
+          <span>Pairs changed</span><strong id="changed">—</strong
+          ><small id="changedPositive">—</small>
+        </div>
+        <div>
+          <span>Below minimum</span><strong id="below">—</strong
+          ><small id="belowCount">—</small>
+        </div>
+        <div>
+          <span>Above maximum</span><strong id="above">—</strong
+          ><small id="aboveCount">—</small>
+        </div>
+        <div>
+          <span>Clipping distortion</span><strong id="mse">—</strong
+          ><small>Mean squared change in ln units²</small>
+        </div>
+      </section>
+      <div id="nonfinite" class="nonfinite" aria-live="polite"></div>
+      <section class="distribution">
+        <div>
+          <h3>Value distribution</h3>
+          <p>
+            Selected transformation before clipping. Percentages use finite
+            values; nonfinite categories are reported separately.
+          </p>
+        </div>
+        <label
+          >Show<select id="histMode">
+            <option value="positive">Nonzero-count pairs</option>
+            <option value="all">All supported pairs</option>
+          </select></label
+        ><svg
+          id="histogram"
+          role="img"
+          aria-label="Distribution of original log counts with clipping bounds"
+        ></svg>
+      </section>
+      <p id="scaleNote" class="note"></p>
+      <details>
+        <summary>Methods and sharing</summary>
+        <p>
+          <strong>1 · No normalization:</strong> ln(1 + O), where O is the raw
+          PET count. All methods start from the same raw counts aggregated
+          before transformation. Actual diagonal counts and supported zeros
+          remain included. No ICE/KR, adaptive coarse-graining or contact-map
+          smoothing is used.
+        </p>
+        <p>
+          <strong>2 · Shared observed distance:</strong> E(d) = all-chromosome
+          raw PET total at separation d / supported unique pair opportunities at
+          d, including zeros. This is a raw-count expectation, distinct from a
+          baseline fitted to mean ln(1 + counts).
+        </p>
+        <p>
+          <strong>3 · Shuffled endpoints:</strong> endpoints are re-paired
+          within each chromosome in ten seeded rounds using the pinned cLoops2
+          estDis implementation. Shuffled distance histograms are pooled and
+          divided by supported pair opportunities. This per-pixel conversion is
+          our map adaptation of the green distance-frequency graph.
+        </p>
+        <p>
+          <strong>4 · Dense PLB adaptation:</strong> each endpoint shifts by
+          −5…−1 or +1…+5 output bins. Average counts across unique eligible
+          nearby unordered pairs; retain zeros and actual diagonal counts,
+          exclude the central pair and reversed duplicates. Chromosome halos
+          supply neighbors outside the displayed window. The stabilized option
+          uses E = max(B, 1)/n; the unmodified option uses E = B/n. No neighbors
+          means undefined. This fixed-bin construction follows the original
+          cLoops local-background idea; it is not the complete loop caller.
+        </p>
+        <p>
+          <strong>5 · Within-window distance:</strong> raw-count means over
+          supported pairs, using cooltools nearby-distance groups (ratio 1.03).
+          Computed over the entire selected 1-, 2- or 4-Mb window, then retained
+          when zooming. Akita-inspired, without Akita’s balancing,
+          coarse-graining, interpolation, clipping or smoothing.
+        </p>
+        <p>
+          Shared normalization references are descriptive and include inspected
+          chromosomes. PLB and within-window backgrounds depend on the observed
+          map. They are not supplied to the predictive baseline. The third panel
+          retains the frozen endpoint spline/ridge baseline in its original
+          log-map units, with display clipping only. No expected background is
+          applied to it, and it is not logged a second time. Its color scale
+          matches the middle observed panel. The first panel keeps the original
+          observed log counts as a reference.
+        </p>
+        <p>
+          Each model uses a distance intercept plus a symmetric adjustment for
+          DNase at both endpoints. Existing 1-, 2- and 5-kb models are from the
+          completed large-window campaign; 10-kb models use the same fitting
+          windows. The 1-Mb views reuse the frozen 2-Mb model coefficients at
+          the same bin width; they are evaluations on smaller regions, not newly
+          fitted models. None fits chr3/chr4 contacts. Other displayed
+          chromosomes include baseline fitting chromosomes; these exploratory
+          correlations are not a new held-out evaluation. A baseline cell is
+          unavailable if either endpoint lacks complete DNase coverage. Baseline
+          metrics use common supported pairs, include zeros and the actual
+          diagonal, and are recalculated after the selected clipping in the
+          comparison card.
+        </p>
+        <p>
+          For ln(O/E), zero counts with E &gt; 0 remain −∞. Positive counts with
+          E = 0 are +∞; 0/0 or unavailable expectations are undefined. These
+          categories render white and are counted separately. They are never
+          silently moved into finite clipping bins. For ln(1 + O/E), O = E
+          corresponds to ln(2), not zero.
+        </p>
+        <p>
+          There are 5,372 complete coordinate windows across all 24 nuclear
+          chromosomes, at each of four bin widths: 21,488 maps. ChrY lacks the
+          verified DNA-reference support and is explicitly masked; chrM has no
+          cis matrix and no complete 1-Mb window. Incomplete chromosome tails
+          are excluded. Support is the existing reference-availability mask, not
+          a full mappability assessment. Overview rendering samples native cells
+          without smoothing; zoom to resolve individual bins.
+        </p>
+        <p>
+          <strong>Displayed PCC:</strong> The first score compares clip(ln(1 +
+          O), 0, raw maximum) with the displayed baseline. The second compares
+          the displayed selected transformation T(O) with that same baseline.
+          The middle and right maps apply the chosen minimum/maximum, then
+          saturation at their color-scale limits. Native values after these
+          operations determine the scores; positive affine color rescaling does
+          not change Pearson. No normalization with matching observed display
+          bounds gives identical scores. The original unclipped corr(ln(1 + O),
+          B) and the selected-transformation unclipped correlation remain under
+          “What is being compared?” and in settings exports. B is the original
+          signed log-map prediction, never divided by E or logged again. In
+          normalized modes the middle map and baseline represent different
+          quantities; their correlation describes the displayed patterns, not
+          normalized prediction accuracy. Both scores use common supported
+          unique unordered pairs intersecting the visible viewport. Mirrored
+          pairs count once, partially visible edge bins and the actual diagonal
+          are included. Nonfinite values are excluded before clipping, never
+          converted to finite boundary values. Each score reports its retained
+          pair count. Literal ln ratios exclude zero observations. Native
+          Float32 map values are used, not sampled screen pixels or quantized
+          colors. PCC is undefined for constant maps or fewer than two pairs.
+          Normalization backgrounds remain defined on the complete selected
+          window or chromosome; zoom only changes the scored region.
+        </p>
+        <p>
+          <strong>Share a view:</strong> choose Copy view link to share the
+          current region, normalization, clipping and zoom. The website is
+          public; no account is needed. A localhost link works only on your
+          computer. The viewer loads map data from this site and does not upload
+          your selections or use analytics.
+        </p>
+        <p>
+          <a
+            href="https://github.com/YaqiangCao/cLoops2/blob/e7febf79ea7e5823c12f982bdb34497bab56b330/cLoops2/estDis.py"
+            target="_blank"
+            rel="noopener"
+            >Shuffling source</a
+          >
+          ·
+          <a
+            href="https://academic.oup.com/bioinformatics/article/36/3/666/5553098"
+            target="_blank"
+            rel="noopener"
+            >Original cLoops PLB</a
+          >
+          ·
+          <a
+            href="https://github.com/open2c/cooltools/blob/v0.7.1/cooltools/lib/numutils.py"
+            target="_blank"
+            rel="noopener"
+            >Distance grouping</a
+          >
+        </p>
+        <p>
+          <a
+            href="https://github.com/Tuan-hosts/Viewer/blob/main/site/README.md"
+            >Methods and verification</a
+          >
+          ·
+          <a
+            href="https://github.com/Tuan-hosts/Viewer/blob/main/site/VALIDATION_REPORT.md"
+            >Genome-wide validation</a
+          >
+          · <button id="saveSettings">Download current settings</button> ·
+          <button id="copyLink">Copy view link</button>
+        </p>
+      </details>
+    </main>
+    <footer>ActiveHiTRAC · K562 experimental counts · 17 September 2026</footer>
+    <script src="data/manifest.js"></script>
+    <script src="extension.js"></script>
+    <script src="halos.js"></script>
+    <script src="genome.js?v=20260917-public"></script>
+    <script src="comparison.js?v=20260917-public"></script>
+    <script src="core.js"></script>
+    <script src="normalization.js"></script>
+    <script src="heatmap-v2.js"></script>
+    <script src="app-v2.js?v=20260917-public"></script>
+  </body>
+</html>
