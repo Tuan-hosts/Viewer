@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "checks": [
+    "1kb/2Mb chr4:108000000: all methods/forms, support, sticky bounds, displayed PCC",
+    "1kb/1Mb chr1:0: all methods/forms, support, sticky bounds, displayed PCC",
+    "1kb/4Mb chr1:104000000: all methods/forms, support, sticky bounds, displayed PCC",
+    "2kb/4Mb chr2:104000000: all methods/forms, support, sticky bounds, displayed PCC",
+    "5kb/4Mb chr22:44000000: all methods/forms, support, sticky bounds, displayed PCC",
+    "10kb/1Mb chrX:155000000: all methods/forms, support, sticky bounds, displayed PCC",
+    "2kb/2Mb chr13:0: all methods/forms, support, sticky bounds, displayed PCC",
+    "1kb/2Mb chrY:0: all methods/forms, support, sticky bounds, displayed PCC",
+    "Rapid chromosome and lazy-PLB transitions discard stale replies; zoom uses native visible pairs"
+  ],
+  "geometry_cases": 8
+}

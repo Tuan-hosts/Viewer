@@ -1,0 +1,36 @@
+name: Publish private Viewer
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: private-viewer-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Require private repository and private Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh api repos/$GITHUB_REPOSITORY --jq '.private')" = true
+          test "$(gh api repos/$GITHUB_REPOSITORY/pages --jq '.public')" = false
+      - name: Verify packaged files
+        run: python scripts/verify_package.py
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Deploy private site
+        id: deployment
+        uses: actions/deploy-pages@v4
