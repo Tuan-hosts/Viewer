@@ -56,5 +56,12 @@
     "baseline_mse": 0.07500136710994446,
     "baseline_pearson": 0.60735416458995
   },
-  "scope": "Fitting-set capacity predictions; these checks do not establish generalization."
+  "scope": "Fitting-set capacity predictions; these checks do not establish generalization.",
+  "stability_review": {
+    "passed": true,
+    "checked_utc": "2026-09-23T14:52:15.840045+00:00",
+    "receipt": "stability.json",
+    "numerical_comparisons": 438,
+    "deployment_regression_checks": 111
+  }
 }

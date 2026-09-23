@@ -173,17 +173,23 @@
   }
   const cache = new Map(),
     pending = new Map();
-  async function loadPacket(rec) {
-    if (cache.has(rec.file)) return cache.get(rec.file);
-    if (pending.has(rec.file)) return pending.get(rec.file);
+  async function loadPacket(rec, options = {}) {
+    const signal = options.signal;
+    if (cache.has(rec.file)) {
+      const result = cache.get(rec.file);
+      cache.delete(rec.file); cache.set(rec.file, result);
+      return result;
+    }
+    if (!signal && pending.has(rec.file)) return pending.get(rec.file);
     const task = (async () => {
       try {
-        const response = await fetch(rec.file, { credentials: "same-origin" });
+        const response = await fetch(rec.file, { credentials: "same-origin", signal });
         if (!response.ok)
           throw Error(
             "Could not load chromosome data. Check your connection and try again.",
           );
         const bytes = await response.arrayBuffer();
+        if (signal?.aborted) throw new DOMException("Download cancelled", "AbortError");
         if (bytes.byteLength !== rec.bytes)
           throw Error("Incomplete chromosome download");
         const hash = Array.from(
@@ -192,6 +198,7 @@
         ).join("");
         if (hash !== rec.sha256)
           throw Error("Chromosome checksum failed; reload to retry.");
+        if (signal?.aborted) throw new DOMException("Download cancelled", "AbortError");
         const buffer = await new Response(
           new Blob([bytes])
             .stream()
@@ -199,18 +206,19 @@
         ).arrayBuffer();
         if (buffer.byteLength !== rec.uncompressed_bytes)
           throw Error("Chromosome decompression length mismatch");
+        if (signal?.aborted) throw new DOMException("Download cancelled", "AbortError");
         const result = decodeGenome(buffer);
         cache.set(rec.file, result);
         while (cache.size > 2) cache.delete(cache.keys().next().value);
         return result;
       } finally {
-        pending.delete(rec.file);
+        if (!signal) pending.delete(rec.file);
       }
     })();
-    pending.set(rec.file, task);
+    if (!signal) pending.set(rec.file, task);
     return task;
   }
-  const api = { decodeGenome, windowData, loadPacket };
+  const api = { decodeGenome, windowData, loadPacket, cacheStats: () => ({packets:cache.size, bytes:[...cache.values()].reduce((sum,c)=>sum+c.counts.buffer.byteLength,0)}) };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.HiTracGenome = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -2,7 +2,10 @@
   "status": "VALIDATED",
   "maps": 21488,
   "chromosome_packets": 96,
-  "total_bytes": 214652987,
+  "prediction_settings": 72,
+  "prediction_windows": 5376,
+  "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
+  "total_bytes": 214664441,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -25,14 +28,24 @@
       "sha256": "53b33bc9ff8ed605b4c354cfd3d4eb1bcef55f9472a271bb12a10f3ee66e7395"
     },
     {
+      "file": "site/capacity/stability.json",
+      "bytes": 2233,
+      "sha256": "6152ab32c3a26043396fbc3d0fb0b29c5d7a70f5a54a1815cace1a7ba276a3f8"
+    },
+    {
       "file": "site/capacity/validation.json",
-      "bytes": 1910,
-      "sha256": "5fcacde013f90d56bb38cb6f69806e840a2d8fccc8f119d447b19b10e01202c5"
+      "bytes": 2122,
+      "sha256": "cd74cb85ef7cf3b19c10bc4df110be63e3d710867b373dc027cb287292bf0236"
     },
     {
       "file": "site/capacity-math.js",
-      "bytes": 3107,
-      "sha256": "f915e799cd4d7e9a7669a8d73983fa40148492b0d5435c4a0f73f2accaf86edb"
+      "bytes": 4304,
+      "sha256": "3b41030755fbbfad3d53fe48bb813a5f2d6e472edfaa258166ab5a2d2993220d"
+    },
+    {
+      "file": "site/capacity-packet.js",
+      "bytes": 4126,
+      "sha256": "ad6518a0f3d72e5d496ac32ae4f146d349b75b36ec9c2782f622d33928df5469"
     },
     {
       "file": "site/comparison.js",
@@ -536,8 +549,8 @@
     },
     {
       "file": "site/genome.js",
-      "bytes": 6588,
-      "sha256": "3da6a94447b9d8eec17bc66b77c89522a55c9483f3e47e256a4aa2cae9cd1d6d"
+      "bytes": 7170,
+      "sha256": "6b4fc488cfd8bd917397dbba1430c3d409e5cb0130fb1e1dbaf2e44976d16db2"
     },
     {
       "file": "site/GENOME_INTERACTION_QA.json",
@@ -561,8 +574,8 @@
     },
     {
       "file": "site/index.html",
-      "bytes": 6970,
-      "sha256": "20201e0482a787162280cbd067a2d2e10e2d9eb1cfd5506419b06e144b77dceb"
+      "bytes": 7156,
+      "sha256": "7bbb8b1b0b8bff7d5dab8b7451fcbb0fb886e41f01897cdc1875026cc8a82b6d"
     },
     {
       "file": "site/normalization.js",
@@ -571,8 +584,8 @@
     },
     {
       "file": "site/README.md",
-      "bytes": 5990,
-      "sha256": "6cf05ae91cec125997faa71cc7df7bf7e0df5fc809b51fef6b94050fecf96eec"
+      "bytes": 6378,
+      "sha256": "05edae76b79b49872d1594dd0a2e9c132d63a33c19902cab6fac36d1bf5bf1a2"
     },
     {
       "file": "site/style.css",
@@ -586,21 +599,18 @@
     },
     {
       "file": "site/viewer-v3.css",
-      "bytes": 4966,
-      "sha256": "4fa293c121f38344d0b3ddd9b3775f2e0281987cf958e98ad81f7161bc7561ff"
+      "bytes": 5101,
+      "sha256": "8bb54fd0c1eed74060adc5cd942e0faadf607b44fc3522eb4d276636896e1413"
     },
     {
       "file": "site/viewer-v3.js",
-      "bytes": 21011,
-      "sha256": "c8cce63fe4014236f2f4c1f244e649ef0845cb84bcbe17a47cd3f50ecc505af1"
+      "bytes": 23343,
+      "sha256": "5c51b8d736016c4134931585d8c79971a7810ee942c4a0ce92331493a29eecc1"
     },
     {
       "file": "site/viewer-worker.js",
-      "bytes": 1470,
-      "sha256": "7cd49419f9ca925c65b9a912f8d3ff7fa3b2c3fb41378476610bc08ad8a4c658"
+      "bytes": 1533,
+      "sha256": "be711237a0ca5ee5ca166322f8bb1b384ba684e4c8e88b5db6e851f489abf89a"
     }
-  ],
-  "prediction_settings": 72,
-  "prediction_windows": 5376,
-  "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d"
+  ]
 }

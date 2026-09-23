@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "checked_utc": "2026-09-23T14:52:15.840045+00:00",
+  "base_site_commit": "3b28450da0872cffe8dd4b877fc6804b8768e50c",
+  "data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
+  "unchanged_data_and_normalization_files": 100,
+  "numerical": {
+    "passed": true,
+    "fixtures": 219,
+    "comparisons": 438,
+    "checks": [
+      "actual worker packet decoder vs independently reconstructed originals",
+      "optimized comparison vs NumPy fixtures",
+      "diagonal, positive and zero cells, masks, partial viewports and mirrored deduplication",
+      "negative-infinity exploration handling and excluded undefined values"
+    ],
+    "benchmark": {
+      "grid": 4000,
+      "pairs": 7736211,
+      "old_ms": 513.9832999999999,
+      "new_ms": 201.59259999999995,
+      "speedup": 2.5496139243206346
+    }
+  },
+  "deployment_regression_checks": 111,
+  "browser_checks": [
+    "Native 4000 x 4000 map renders and scores correctly",
+    "Latest-view-only metric queue under rapid clipping and zoom changes",
+    "Rapid geometry and target changes cancel obsolete work",
+    "Reference-color-only change retains metrics without recomputation",
+    "Invalid bounds clear metrics and disable export",
+    "Empty fitting-region selection is handled without errors",
+    "Deliberate HTTP 503 shows Retry; retry recovers exact reference scores"
+  ],
+  "browser_reference": {
+    "setting": 69,
+    "window": "1kb_4Mb_chr3_24000000",
+    "bounds": [
+      -5,
+      5
+    ],
+    "pairs": 7995097,
+    "model_mse_display": 0.002194,
+    "model_pearson_display": 0.48022,
+    "baseline_mse_display": 0.00227,
+    "baseline_pearson_display": 0.45222,
+    "full_metric_ms": 252,
+    "known_native_buffer_bytes": 248062000,
+    "decoded_chromosome_cache_bytes": 27602604,
+    "memory_scope": "Known retained native map buffers only; not peak or total browser memory."
+  },
+  "limitations": [
+    "Timing measurements are specific to this computer/runtime; network download duration varies.",
+    "Interactive browser checks used the Codex Chromium browser, not every browser/device.",
+    "Native 4000 x 4000 maps still require substantial browser memory."
+  ],
+  "scientific_changes": false,
+  "training_changes": false
+}

@@ -31,6 +31,25 @@
       rangeNormalizedMse:trainingClipped.rangeNormalizedMse,displayMse:comparison.mse,displayPcc:comparison.pcc,
       excluded,bins:{x0,x1,y0,y1}};
   }
+  // One traversal for the displayed model and baseline. Skip unused historical summaries.
+  function compareMaps(data,view,lo,hi){
+    const n=data.meta.window.grid,x0=Math.max(0,Math.floor(view.x)),y0=Math.max(0,Math.floor(view.y));
+    const x1=Math.min(n,Math.ceil(view.x+view.size)),y1=Math.min(n,Math.ceil(view.y+view.size));
+    const model=data.prediction?[0,0,0,0,0,0,0]:null;
+    const baseline=data.scoreBaseline?[0,0,0,0,0,0,0]:null;
+    if(!model&&!baseline)return {prediction:null,baseline:null};
+    for(let i=y0;i<y1;i++)for(let j=x0;j<x1;j++){
+      if(i>j&&j>=y0&&j<y1&&i>=x0&&i<x1)continue;
+      const k=index(i,j,n);if(!data.valid[k])continue;
+      let value=data.target[k];
+      if(data.exploreRatio&&value===-Infinity)value=lo;
+      if(!Number.isFinite(value))continue;
+      const a=Math.max(lo,Math.min(hi,value));
+      if(model&&Number.isFinite(data.prediction[k]))add(model,a,Math.max(lo,Math.min(hi,data.prediction[k])));
+      if(baseline&&Number.isFinite(data.baseline[k]))add(baseline,a,Math.max(lo,Math.min(hi,data.baseline[k])));
+    }
+    return {prediction:model?summarize(model,lo,hi):null,baseline:baseline?summarize(baseline,lo,hi):null};
+  }
   function baselineValues(model,features){
     const n=model.beta.length,k=model.gamma[0].length;
     if(features.length!==n||model.gamma.length!==n||features.some(x=>x.length!==k)||model.gamma.some(x=>x.length!==k))throw Error('Baseline geometry mismatch');
@@ -40,5 +59,5 @@
       if(!Number.isFinite(p))throw Error('Nonfinite baseline prediction');output[at++]=p;
     }return output;
   }
-  const api={index,pcc,metrics,baselineValues};if(typeof module!=='undefined')module.exports=api;else scope.CapacityMath=api;
+  const api={index,pcc,metrics,compareMaps,baselineValues};if(typeof module!=='undefined')module.exports=api;else scope.CapacityMath=api;
 })(typeof window!=='undefined'?window:this);

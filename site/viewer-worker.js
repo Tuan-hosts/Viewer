@@ -1,9 +1,14 @@
-importScripts('capacity-math.js', 'comparison.js');
+importScripts('capacity-math.js?v=20260923b', 'capacity-packet.js?v=20260923b', 'comparison.js');
 let current;
-onmessage = event => {
+onmessage = async event => {
   const {id, type, data} = event.data;
+  const started = performance.now();
   try {
-    if (type === 'explore') {
+    if (type === 'capacity') {
+      current = await CapacityPacket.load(data.baseUrl, data.setting, data.window);
+      // Keep one worker copy for metrics; the UI receives one copy for drawing.
+      postMessage({id, result:current, durationMs:performance.now()-started});
+    } else if (type === 'explore') {
       const engine = new HiTracComparison.Engine();
       engine.init(data.map, data.extra, data.model, data.halo);
       engine.prepare(data.method, data.ratio, true);
@@ -12,18 +17,14 @@ onmessage = event => {
         valid[i] = engine.common[i] && (Number.isFinite(target[i]) || target[i] === -Infinity) && Number.isFinite(baseline[i]) ? 1 : 0;
       postMessage({id, result:{target, baseline, valid}}, [target.buffer, baseline.buffer, valid.buffer]);
     } else if (type === 'init') {
-      current = data; postMessage({id, result:true});
+      current = data;
+      postMessage({id, result:true});
     } else if (type === 'metrics') {
-      const {view, lo, hi} = data;
-      let target = current.target;
-      if (current.exploreRatio) {
-        target = target.slice();
-        for (let i=0;i<target.length;i++) if(target[i] === -Infinity) target[i]=lo;
-      }
-      const input = {...current, target};
-      const prediction = current.prediction ? CapacityMath.metrics(input,view,lo,hi).comparison : null;
-      const baseline = current.scoreBaseline ? CapacityMath.metrics({...input,prediction:current.baseline},view,lo,hi).comparison : null;
-      postMessage({id, result:{prediction, baseline}});
+      if (!current) throw Error('Select a loaded map before calculating metrics.');
+      const result = CapacityMath.compareMaps(current, data.view, data.lo, data.hi);
+      postMessage({id, result, durationMs:performance.now()-started});
     }
-  } catch (e) { postMessage({id,error:e.message}); }
+  } catch (error) {
+    postMessage({id, error:error.message});
+  }
 };

@@ -48,6 +48,8 @@ These are fitting-set comparisons. Training and evaluation used the same windows
 
 The interface and genome-wide observations are served by GitHub Pages. Prediction packets live on the repository's `capacity-data-20260923` branch and are requested from a pinned commit only when a window is selected. Float32 byte-plane encoding and gzip are lossless. No predicted values are quantized, resized or smoothed. Files are checked against SHA-256 hashes before use. Packets contain the saved target, prediction and common support; the baseline is reconstructed from verified coefficients and endpoint features.
 
+Prediction downloads, lossless decoding, baseline reconstruction and metrics run in a background worker. Obsolete selections are cancelled, metric requests are coalesced, and the chromosome cache is limited to two packets. A failed or timed-out download shows a Retry button. Large native maps still require more browser memory than coarse maps; memory depends on the selected geometry.
+
 The bulk training checkpoints and original server exports remain unchanged. The public packets contain map arrays, endpoint baseline features, and provenance hashes; they do not contain credentials, DNA sequence files or private server paths.
 
 Sources: [cLoops local background](https://academic.oup.com/bioinformatics/article/36/3/666/5553098), [pinned cLoops2 distance shuffling](https://github.com/YaqiangCao/cLoops2/blob/e7febf79ea7e5823c12f982bdb34497bab56b330/cLoops2/estDis.py), [cooltools distance grouping](https://github.com/open2c/cooltools/blob/v0.7.1/cooltools/lib/numutils.py).

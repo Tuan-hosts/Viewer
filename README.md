@@ -21,6 +21,7 @@ Open http://127.0.0.1:8000 in a current Chrome, Edge or Firefox browser. Predict
 
 - `site/viewer-v3.js`: controls, linked views, rendering and exports.
 - `site/viewer-worker.js`: map calculations and metrics off the main browser thread.
+- `site/capacity-packet.js`: checked, lossless prediction decoding in the worker.
 - `site/capacity-math.js`: native-bin clipping, MSE, RMSE, Pearson and baseline evaluation.
 - `site/genome.js`: chromosome downloads, integrity checks and window extraction.
 - `site/comparison.js`: original normalization and exploratory baseline calculations.
@@ -30,3 +31,5 @@ Open http://127.0.0.1:8000 in a current Chrome, Edge or Firefox browser. Predict
 Lossless prediction packets are stored separately on the `capacity-data-20260923` branch, keeping the Pages site small. The interface downloads only the selected window and checks its SHA-256 hash. Deployment verifies every site file against `FILE_MANIFEST.json`.
 
 ChrY remains unavailable for scoring because its reference-support mask is missing. ChrM has no usable matrix. Existing observations and normalization references were preserved.
+
+Prediction decoding and metrics run in a background worker. Changing the selection cancels obsolete work; repeated zoom or clipping changes keep only the latest pending calculation. The browser retains at most two decoded chromosome packets and one prepared window. Failed downloads can be retried. `node scripts/test_viewer.cjs` checks native metric calculations and packet validation before each deployment.

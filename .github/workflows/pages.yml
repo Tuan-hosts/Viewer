@@ -28,6 +28,8 @@ jobs:
           test "$(gh api repos/$GITHUB_REPOSITORY/pages --jq '.public')" = true
       - name: Verify packaged files
         run: python scripts/verify_package.py
+      - name: Verify native metrics and prediction decoding
+        run: node scripts/test_viewer.cjs
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site
