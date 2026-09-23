@@ -1,0 +1,202 @@
+{
+  "version": 1,
+  "bin_bp": 1000,
+  "source": "K562.bw",
+  "source_sha256": "7ba6ba20ed8c25acc282d03253360ac8edcdce6b9ab1a90832a980cfeaad12c6",
+  "definition": "Arithmetic mean of original bigWig values over each complete 1-kb bin. Incomplete coverage is missing, not zero.",
+  "packets": {
+    "chr1": {
+      "file": "tracks/chr1.f32.gz",
+      "length": 248956422,
+      "bins": 248957,
+      "bytes": 536617,
+      "sha256": "a68d6fa5c20bdf840a6c4619b7b6ab0bf87bd8342fb1e788077b18c98c46ad01",
+      "supported_bins": 248956
+    },
+    "chr2": {
+      "file": "tracks/chr2.f32.gz",
+      "length": 242193529,
+      "bins": 242194,
+      "bytes": 535758,
+      "sha256": "902229b5077608c5f3631838b65e392c2bf9654d5911605f062fba4551d4aa2c",
+      "supported_bins": 242193
+    },
+    "chr3": {
+      "file": "tracks/chr3.f32.gz",
+      "length": 198295559,
+      "bins": 198296,
+      "bytes": 436833,
+      "sha256": "6f2a045448b601634e89e53d192e37d3b57f56c3e26c64241c2dc90dff5ce364",
+      "supported_bins": 198295
+    },
+    "chr4": {
+      "file": "tracks/chr4.f32.gz",
+      "length": 190214555,
+      "bins": 190215,
+      "bytes": 409361,
+      "sha256": "99621639bce2af138ebc25b599979986ec8a6c07ac95d84e338c17d043f18db2",
+      "supported_bins": 190214
+    },
+    "chr5": {
+      "file": "tracks/chr5.f32.gz",
+      "length": 181538259,
+      "bins": 181539,
+      "bytes": 396757,
+      "sha256": "8b83c2fe833cab83832305b70a02631aaab489aef016d263e75bd0bc550189a6",
+      "supported_bins": 181538
+    },
+    "chr6": {
+      "file": "tracks/chr6.f32.gz",
+      "length": 170805979,
+      "bins": 170806,
+      "bytes": 388473,
+      "sha256": "922cd6d052063d04bc6f226d1e866390b90126a29030276b762cacc592402b32",
+      "supported_bins": 170805
+    },
+    "chr7": {
+      "file": "tracks/chr7.f32.gz",
+      "length": 159345973,
+      "bins": 159346,
+      "bytes": 362341,
+      "sha256": "cff65eb0dc32c186876b210f6fa0c7361693af6f2a757aec4001ae78f1d3183f",
+      "supported_bins": 159345
+    },
+    "chr8": {
+      "file": "tracks/chr8.f32.gz",
+      "length": 145138636,
+      "bins": 145139,
+      "bytes": 319603,
+      "sha256": "95b7665901a1ccc7b726280666b26209bfbb71db2fc0befe7322351232f9f6a3",
+      "supported_bins": 145138
+    },
+    "chr9": {
+      "file": "tracks/chr9.f32.gz",
+      "length": 138394717,
+      "bins": 138395,
+      "bytes": 245246,
+      "sha256": "765443f0efc044cb7ebe3b1927debc6a921eaa4f5a37590097fb511c0689ad0e",
+      "supported_bins": 138394
+    },
+    "chr10": {
+      "file": "tracks/chr10.f32.gz",
+      "length": 133797422,
+      "bins": 133798,
+      "bytes": 300583,
+      "sha256": "a83b5a4536b8bb1d4424aba315bbd0aab0267182776bd2e804ce4f3dbb1b4e2e",
+      "supported_bins": 133797
+    },
+    "chr11": {
+      "file": "tracks/chr11.f32.gz",
+      "length": 135086622,
+      "bins": 135087,
+      "bytes": 303846,
+      "sha256": "71c1d79dabba88ec4917ccf2db67408edf3bc836912b2fddb4081e7c6b223685",
+      "supported_bins": 135086
+    },
+    "chr12": {
+      "file": "tracks/chr12.f32.gz",
+      "length": 133275309,
+      "bins": 133276,
+      "bytes": 298312,
+      "sha256": "c35fea9a3b0ac7b7b50ee5e7cb3f5f4797439a96bcf9a058ad45330a95172d0f",
+      "supported_bins": 133275
+    },
+    "chr13": {
+      "file": "tracks/chr13.f32.gz",
+      "length": 114364328,
+      "bins": 114365,
+      "bytes": 209266,
+      "sha256": "02d56ffd69b2c90a5e1d586609ab206ccc7a311c22eb8d30f14dd047db953ad7",
+      "supported_bins": 114364
+    },
+    "chr14": {
+      "file": "tracks/chr14.f32.gz",
+      "length": 107043718,
+      "bins": 107044,
+      "bytes": 195747,
+      "sha256": "f5bb8933241baa29569defd279051df12a5f40d55fc5e49ad87e68b0f0cb44db",
+      "supported_bins": 107043
+    },
+    "chr15": {
+      "file": "tracks/chr15.f32.gz",
+      "length": 101991189,
+      "bins": 101992,
+      "bytes": 187330,
+      "sha256": "ad65687de184ea43063d655e89e24f23ac63f2730816ef0128cf6b9b146e9b4e",
+      "supported_bins": 101991
+    },
+    "chr16": {
+      "file": "tracks/chr16.f32.gz",
+      "length": 90338345,
+      "bins": 90339,
+      "bytes": 187635,
+      "sha256": "f4c1399344c0e2e59e14fdb0ec3b1b62b41f21c950bd2684a8d9b8268d2dd560",
+      "supported_bins": 90338
+    },
+    "chr17": {
+      "file": "tracks/chr17.f32.gz",
+      "length": 83257441,
+      "bins": 83258,
+      "bytes": 191931,
+      "sha256": "119c3866fc9a3b57a2fccd2074439c66b3c4f03e8a57aac3d521919eefc592c5",
+      "supported_bins": 83257
+    },
+    "chr18": {
+      "file": "tracks/chr18.f32.gz",
+      "length": 80373285,
+      "bins": 80374,
+      "bytes": 169014,
+      "sha256": "e4712fc810a48a82656c3b32fb1392285ae700a54d1f4c974ae390ec1b04ca8b",
+      "supported_bins": 80373
+    },
+    "chr19": {
+      "file": "tracks/chr19.f32.gz",
+      "length": 58617616,
+      "bins": 58618,
+      "bytes": 142195,
+      "sha256": "05bfd3f067b0c3472b9c61c37428e15863c3ecca29cff77cc6303954031fb72d",
+      "supported_bins": 58617
+    },
+    "chr20": {
+      "file": "tracks/chr20.f32.gz",
+      "length": 64444167,
+      "bins": 64445,
+      "bytes": 144956,
+      "sha256": "035ed923d0c1940b682497bc6ff8de0977e16da3aee60086bad4c26ae7215473",
+      "supported_bins": 64444
+    },
+    "chr21": {
+      "file": "tracks/chr21.f32.gz",
+      "length": 46709983,
+      "bins": 46710,
+      "bytes": 83531,
+      "sha256": "ed04cdef033a7e66951277430375a1cd33b0865b4db0bc897fc4c7bab33908a9",
+      "supported_bins": 46709
+    },
+    "chr22": {
+      "file": "tracks/chr22.f32.gz",
+      "length": 50818468,
+      "bins": 50819,
+      "bytes": 90296,
+      "sha256": "0ca1e811b42d90a545a92988c8eff708f6a1788c2b640fa7847271418f936c0a",
+      "supported_bins": 50818
+    },
+    "chrX": {
+      "file": "tracks/chrX.f32.gz",
+      "length": 156040895,
+      "bins": 156041,
+      "bytes": 315172,
+      "sha256": "bb0ea7c79622751033a603e25535488cebdb95c070828545c61f69b37cc6d717",
+      "supported_bins": 156040
+    },
+    "chrY": {
+      "file": "tracks/chrY.f32.gz",
+      "length": 57227415,
+      "bins": 57228,
+      "bytes": 7042,
+      "sha256": "a76e37fdca74f05d979083259de87a5ead40ac61bb2129ab85952ab54ab2ef3a",
+      "supported_bins": 57227
+    }
+  },
+  "display": "ln(1 + arithmetic mean signal in the map bin)"
+}

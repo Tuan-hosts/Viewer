@@ -53,3 +53,8 @@ Prediction downloads, lossless decoding, baseline reconstruction and metrics run
 The bulk training checkpoints and original server exports remain unchanged. The public packets contain map arrays, endpoint baseline features, and provenance hashes; they do not contain credentials, DNA sequence files or private server paths.
 
 Sources: [cLoops local background](https://academic.oup.com/bioinformatics/article/36/3/666/5553098), [pinned cLoops2 distance shuffling](https://github.com/YaqiangCao/cLoops2/blob/e7febf79ea7e5823c12f982bdb34497bab56b330/cLoops2/estDis.py), [cooltools distance grouping](https://github.com/open2c/cooltools/blob/v0.7.1/cooltools/lib/numutils.py).
+
+
+## Signal tracks
+
+Training bounds are enabled by default. DNase uses ln(1 + mean K562.bw signal). Tracks follow the horizontal map axis. Detailed signal, profile, clipping and cLoops2 definitions are stored in [viewer-methods.json](meta/viewer-methods.json); verification receipts are in the same metadata folder. These links are not part of the visible Viewer interface.

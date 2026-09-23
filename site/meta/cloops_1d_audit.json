@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "commit": "ecb43088148647681a8bc3d3217ce38583929806",
+  "function": "get1DSig",
+  "source_sha256": "6d6f6518a6e648bde0f03590c42eb36c93017479bc8e9079f56d3c66638c3fb0",
+  "default_extension_bp_each_side": 50,
+  "coverage_integral": 400.0,
+  "default_rpm_divisor": "2 * library Unique PETs / 1e6",
+  "identical_hic_pixel_different_basewise_coverage": {
+    "first": [
+      0.2,
+      0.0
+    ],
+    "second": [
+      0.12,
+      0.08
+    ]
+  },
+  "viewer": "Exact raw binned endpoint counts per kb, with diagonal counted twice; no invented basewise coordinates or library RPM denominator.",
+  "exact_cloops2_reproduction": "Requires the original endpoint coordinates and matching library metadata; unavailable in the current hic-only source."
+}

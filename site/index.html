@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="viewer-v3.css?v=20260923b"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="viewer-v3.css?v=20260923signals"></head>
 <body data-mode="compare">
 <header><div><p class="eyebrow">ACTIVEHITRAC</p><h1>Viewer <span>K562</span></h1><p>Explore contact maps and compare predictions.</p></div><a href="https://github.com/Tuan-hosts/Viewer" target="_blank" rel="noopener">GitHub ↗</a></header>
 <main>
@@ -20,24 +20,26 @@
  <label id="rawLabel" hidden>Raw model<select id="rawModel"><option value="raw1">Training clip [0, 1]</option><option value="raw2">Training clip [0, 2]</option></select></label>
  <label>Clip minimum<input id="lo" type="number" step="0.25" value="-10"></label>
  <label>Clip maximum<input id="hi" type="number" step="0.25" value="10"></label>
- <button id="trainingBounds">Use training bounds</button>
+ <button id="trainingBounds" aria-pressed="true" title="Automatically use this model’s training limits. Editing a limit switches to custom bounds.">Use training bounds</button>
 </section>
 <div class="status-line"><p id="status" role="status" aria-live="polite">Loading maps…</p><button id="retry" hidden>Retry</button></div><output id="diagnostics" hidden></output>
 <section class="map-section">
- <div class="region-heading"><div><h2 id="region">K562</h2><p id="geometry"></p></div><div class="view-tools"><button id="full">Full window</button><button id="detail">250-kb detail</button><label>Zoom<select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option><option value="32">32×</option></select></label><button id="export">Save PNG</button><button id="copy">Copy link</button></div></div>
+ <div class="region-heading"><div><h2 id="region">K562</h2><p id="geometry"></p></div><div class="view-tools"><button id="full">Full window</button><button id="detail">250-kb detail</button><label>Zoom<select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option><option value="32">32×</option></select></label><button id="toggleTracks" aria-pressed="true">Hide signals</button><button id="export">Save PNG</button><button id="copy">Copy link</button></div></div>
+ <div id="trackControls" class="track-controls"><span>Signals and profiles</span></div>
  <div class="maps">
   <article><h3>Observed · raw</h3><p>ln(1 + PET counts)</p><canvas id="raw" width="800" height="800" aria-label="Original observed contacts"></canvas><div class="legend"><span>0</span><i></i><span id="rawLegend">2</span></div></article>
   <article><h3 id="targetTitle">Observed · target</h3><p id="targetCaption"></p><canvas id="target" width="800" height="800" aria-label="Observed target"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
   <article><h3>Distance + DNase baseline</h3><p id="baseCaption"></p><canvas id="baseline" width="800" height="800" aria-label="Distance and accessibility baseline"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
   <article id="predictionPanel"><h3>Overfit prediction</h3><p id="predictionCaption"></p><canvas id="prediction" width="800" height="800" aria-label="Overfit neural prediction"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
  </div>
+ <p id="trackReadout" class="track-readout" aria-live="off"></p>
  <div class="below-maps"><p id="hover">Drag to pan · Scroll to zoom</p><label>Raw color maximum<input id="rawMax" type="number" min="0.01" step="0.25" value="2"></label></div>
 </section>
 <section class="scores" aria-label="Metrics for the visible region">
  <table><thead><tr><th>Visible-region metrics</th><th class="prediction-metric">Overfit prediction</th><th>Distance + DNase</th></tr></thead><tbody><tr><th><abbr title="Mean squared error after clipping both maps, divided by the squared clipping range">MSE</abbr></th><td class="prediction-metric" id="mse">—</td><td id="baseMse">—</td></tr><tr><th>RMSE</th><td class="prediction-metric" id="rmse">—</td><td id="baseRmse">—</td></tr><tr><th>Pearson correlation</th><td class="prediction-metric" id="pcc">—</td><td id="basePcc">—</td></tr></tbody></table>
  <p id="scoreSummary"></p>
 </section>
-<details><summary>About the comparison</summary><p>Metrics compare clipped predictions with clipped targets in the visible region, using the same bounds. MSE is divided by (maximum − minimum)²; RMSE is its square root. Pearson uses those same clipped values. Each supported bin pair is counted once, including the diagonal.</p><p>Choose <b>Explore maps</b> to browse all chromosomes, or <b>Compare predictions</b> to see the matching trained target, baseline and neural output. Overfit predictions cover 32 selected chr3/chr4 regions and their subdivisions. These regions were used for fitting. Here, the observed target and distance + DNase baseline match the selected model’s training target. Zero counts with positive expectation retain the model’s lower-bound label. Undefined expectations and unavailable inputs stay masked.</p><p>Elsewhere, the Viewer shows the original observed maps and the historical baseline in log-count units. A prediction is not invented for an untrained region or transform. Cross-transform baseline accuracy is not reported. Raw-reference colors do not affect comparison metrics.</p><p><a href="README.md">Methods and data</a> · <a href="capacity/validation.json">Verification</a></p></details>
+
 </main><footer>K562 HiTrAC · Genome-wide observations · Overfit results on fitting regions</footer>
-<script src="data/manifest.js"></script><script src="extension.js"></script><script src="genome.js?v=20260923b"></script><script src="capacity-math.js?v=20260923b"></script><script src="viewer-v3.js?v=20260923b"></script>
+<script src="data/manifest.js"></script><script src="extension.js"></script><script src="genome.js?v=20260923signals"></script><script src="capacity-math.js?v=20260923signals"></script><script src="map-profiles.js?v=20260923signals"></script><script src="signal-tracks.js?v=20260923signals"></script><script src="viewer-v3.js?v=20260923signals"></script>
 </body></html>

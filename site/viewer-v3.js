@@ -1,7 +1,9 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id), M=window.HITRAC_MANIFEST, E=window.HITRAC_EXTENSION, C=window.CapacityMath;
+ const signalUI=SignalTracks.attach();
  const names={raw:'No normalization',observed:'Shared observed distance',shuffled:'Shuffled endpoints',plb:'Local PLB',window:'Within-window distance'};
+ let trainingBounds=true;
  let mode="compare",catalog,source,record,arm,data=null,view={x:0,y:0,size:100},version=0,worker=null,serial=0,pending=new Map(),metricTimer,metricVersion=0,renderPending=false;
  let loadController=null, preparedWindow=null, metricBusy=false, metricQueued=null, metricKey=null;
  const pixelCache=new WeakMap(), drawCache=new WeakMap();let screenCache=null;
@@ -45,24 +47,27 @@
  }
  function persist(){
   if(!record||!validBounds())return;
-  const s={mode,window:record.id,method:$('method').value,formulation:$('formulation').value,rawModel:$('rawModel').value,min:+ $('lo').value,max:+ $('hi').value,rawMax:+ $('rawMax').value,fitting:$('fitting').checked,view:{...view}};
+  const s={mode,trainingBounds,window:record.id,method:$('method').value,formulation:$('formulation').value,rawModel:$('rawModel').value,min:+ $('lo').value,max:+ $('hi').value,rawMax:+ $('rawMax').value,fitting:$('fitting').checked,view:{...view}};
   history.replaceState(null,'','#view='+encodeURIComponent(JSON.stringify(s)));
   try{localStorage.setItem('activehitrac.viewer.clipping.v1',JSON.stringify({min:s.min,max:s.max}));}catch{}
  }
  function clearMetrics(){++metricVersion;metricQueued=null;for(const id of ['mse','rmse','pcc','baseMse','baseRmse','basePcc'])$(id).textContent='—';$('scoreSummary').textContent='';}
  function terminate(){if(worker)worker.terminate();worker=null;for(const p of pending.values())p.reject(Error('Superseded window'));pending.clear();clearTimeout(metricTimer);metricQueued=null;metricBusy=false;metricKey=null;}
  function newWorker(){
-  terminate();const active=new Worker('viewer-worker.js?v=20260923b');worker=active;
+  terminate();const active=new Worker('viewer-worker.js?v=20260923signals');worker=active;
   active.onmessage=e=>{if(worker!==active)return;const p=pending.get(e.data.id);if(!p)return;pending.delete(e.data.id);if(e.data.durationMs!==undefined)diagnostic(p.type+'Ms',Math.round(e.data.durationMs));e.data.error?p.reject(Error(e.data.error)):p.resolve(e.data.result);};
   active.onerror=e=>{if(worker!==active)return;status('Could not calculate map metrics. Use Retry.',true);for(const p of pending.values())p.reject(Error(e.message));pending.clear();};
  }
  function call(type,payload){return new Promise((resolve,reject)=>{if(!worker){reject(Error('Map worker is unavailable. Use Retry.'));return;}const id=++serial;pending.set(id,{resolve,reject,type});worker.postMessage({id,type,data:payload});});}
  async function prepareWindow(selected,groups,signal){
   if(preparedWindow?.id===selected.id)return preparedWindow;
-  const chromosome=await HiTracGenome.loadPacket(M.packets[selected.packet],{signal});
+  const [chromosome,dnase]=await Promise.all([
+    HiTracGenome.loadPacket(M.packets[selected.packet],{signal}),
+    SignalTracks.loadDnase(selected,signal)
+  ]);
   if(signal.aborted)throw new DOMException('Selection changed','AbortError');
   const genome=HiTracGenome.windowData(chromosome,selected,groups),raw=upperRaw(genome.map);
-  preparedWindow={id:selected.id,genome,raw};
+  preparedWindow={id:selected.id,genome,raw,signals:{dnase,endpoints:SignalTracks.endpoints(genome.map)}};
   diagnostic('chromosomeCacheBytes',HiTracGenome.cacheStats().bytes);
   return preparedWindow;
  }
@@ -86,6 +91,8 @@
   record=geometry().windows.find(w=>w.id===$('window').value);
   $('rawLabel').hidden=true;$('formLabel').hidden=mode==='compare'||$('method').value==='raw';
   $('trainingBounds').disabled=!arm;
+  if(mode==='compare'&&arm&&trainingBounds){$('lo').value=arm.arm.clip_min;$('hi').value=arm.arm.clip_max;}
+  $('trainingBounds').setAttribute('aria-pressed',String(trainingBounds));
   const at=$('window').selectedIndex;$('prev').disabled=at<=0;$('next').disabled=at<0||at===$('window').options.length-1;
   $('export').disabled=true;$('copy').disabled=!record;
   if(!record){$('region').textContent='No fitting regions';$('geometry').textContent='';status('No fitting regions on this chromosome. Choose chr3/chr4 or turn off “Fitting regions only”.');drawAll();return;}
@@ -103,19 +110,20 @@
     w?call('capacity',{baseUrl:source.baseUrl,setting:selectedArm,window:w}):Promise.resolve(null)
    ]);
    if(v!==version)return;
-   const {genome,raw}=prepared;
+   const {genome,raw,signals}=prepared;
    if(w){
-    data={...loaded,...raw};
+    data={...loaded,...raw,signals};
     $('targetTitle').textContent='Observed · training target';$('targetCaption').textContent=`${names[arm.arm.method]} · trained [${arm.arm.clip_min}, ${arm.arm.clip_max}]`;
     $('baseCaption').textContent='Fitted to the same target';$('predictionCaption').textContent=`Setting ${arm.arm.id} · fitting region`;
    }else{
     const method=$('method').value,ratio=$('formulation').value==='ratio';
     const loaded=await call('explore',{...genome,model:E.models[record.geometry],method,ratio});if(v!==version)return;
-    data={...loaded,...raw,prediction:null,meta:{window:record},scoreBaseline:method==='raw',exploreRatio:ratio&&method!=='raw',capacity:false};
+    data={...loaded,...raw,signals,prediction:null,meta:{window:record},scoreBaseline:method==='raw',exploreRatio:ratio&&method!=='raw',capacity:false};
     $('targetTitle').textContent='Observed · transformed';$('targetCaption').textContent=method==='raw'?'ln(1 + PET counts)':ratio?'ln(O/E) · zeros at lower bound':'ln(1 + O/E)';
     $('baseCaption').textContent='Original ln(1 + counts) baseline';$('predictionCaption').textContent=w?'Unavailable':'No fitted prediction for this selection';
    }
    if(!w)await call('init',{meta:data.meta,target:data.target,prediction:data.prediction,baseline:data.baseline,valid:data.valid,scoreBaseline:data.scoreBaseline,exploreRatio:data.exploreRatio});if(v!==version)return;
+   await call('profileInit',{n:genome.map.n,v:genome.map.v,index:genome.map.index,logs:genome.map.logs});if(v!==version)return;
    diagnostic('loadMs',Math.round(performance.now()-started));
    diagnostic('mapArrayBytes',arrayBytes([data.raw,data.rawSupport])+2*arrayBytes([data.target,data.prediction,data.baseline,data.valid]));
    $('export').disabled=false;status(data.capacity?'':$('method').value==='raw'?'':'Switch to Compare predictions for a baseline and model fitted to the same normalized target.');
@@ -150,8 +158,9 @@
   ctx.putImageData(pixels,plot.x,plot.y);ctx.strokeStyle='#d5dde2';ctx.strokeRect(plot.x-.5,plot.y-.5,plot.size+1,plot.size+1);ctx.fillStyle='#596b76';ctx.font='18px system-ui';
   for(const f of [0,.5,1]){ctx.textAlign='center';ctx.fillText(mb(record.start+(view.x+f*view.size)*record.bin_bp),plot.x+f*plot.size,plot.y+plot.size+30);ctx.textAlign='right';ctx.fillText(mb(record.start+(view.y+f*view.size)*record.bin_bp),plot.x-10,plot.y+f*plot.size+6);}ctx.textAlign='center';ctx.fillText('Genomic position (Mb)',plot.x+plot.size/2,790);
  }
- function drawAll(){const [lo,hi]=bounds();draw('raw',data?.raw,data?.rawSupport,0,+ $('rawMax').value);for(const id of (mode==='compare'?['target','baseline','prediction']:['target','baseline']))draw(id,data?.[id],data?.valid,lo,hi);}
+ function drawAll(){const [lo,hi]=bounds();draw('raw',data?.raw,data?.rawSupport,0,+ $('rawMax').value);for(const id of (mode==='compare'?['target','baseline','prediction']:['target','baseline']))draw(id,data?.[id],data?.valid,lo,hi);signalUI.update(data?.signals,record,view,{lo,hi,rawMax:+$('rawMax').value});}
  function showMetrics(result,job){
+  signalUI.setProfiles(result.profiles,record.id);
   for(const [key,prefix] of [['prediction',''],['baseline','base']]){const m=result[key];if(!m)continue;$(prefix?'baseMse':'mse').textContent=number(m.rangeNormalizedMse);$(prefix?'baseRmse':'rmse').textContent=number(m.rangeNormalizedRmse);$(prefix?'basePcc':'pcc').textContent=number(m.pcc,5);}
   const a=result.prediction,b=result.baseline,n=a?.pairs??b?.pairs;
   let text=n===undefined?'Baseline remains in log-count units; no cross-transform accuracy score.':`${n.toLocaleString()} comparable pairs · clip [${job.lo}, ${job.hi}]`;
@@ -177,10 +186,10 @@
   document.querySelectorAll('.lower').forEach(e=>e.textContent=$('lo').value);document.querySelectorAll('.upper').forEach(e=>e.textContent=$('hi').value);$('rawLegend').textContent=$('rawMax').value;
   if(record)$('zoom').value=[1,2,4,8,16,32].reduce((a,b)=>Math.abs(b-record.grid/view.size)<Math.abs(a-record.grid/view.size)?b:a);
   persist();$('export').disabled=!data;if(!data)return;
-  const [lo,hi]=bounds(),key=[version,lo,hi,Math.floor(view.x),Math.floor(view.y),Math.ceil(view.x+view.size),Math.ceil(view.y+view.size)].join(':');
+  const [lo,hi]=bounds(),key=[version,lo,hi,+$('rawMax').value,Math.floor(view.x),Math.floor(view.y),Math.ceil(view.x+view.size),Math.ceil(view.y+view.size)].join(':');
   if(key===metricKey)return;metricKey=key;
   clearTimeout(metricTimer);clearMetrics();
-  const job={version,revision:metricVersion,view:{...view},lo,hi};
+  const job={version,revision:metricVersion,view:{...view},lo,hi,rawMax:+$('rawMax').value};
   // Keep at most one running calculation and one most-recent pending view.
   metricTimer=setTimeout(()=>{if(job.version===version&&job.revision===metricVersion){metricQueued=job;drainMetrics();}},80);
  }
@@ -195,12 +204,12 @@
  $('exploreMode').onclick=()=>switchMode('explore');$('compareMode').onclick=()=>switchMode('compare');
  $('preset').onchange=()=>{const name=$('preset').value;$('method').value=name.startsWith('raw')?'raw':name;if(name.startsWith('raw'))$('rawModel').value=name;$('formulation').value='ratio';load(record?.start||0);};
  $('window').onchange=()=>load();for(const [id,d] of [['prev',-1],['next',1]])$(id).onclick=()=>{const s=$('window');s.selectedIndex=clip(s.selectedIndex+d,0,s.options.length-1);load();};
- for(const id of ['lo','hi','rawMax']){$(id).oninput=()=>{if(validBounds())status('');schedule();};}
- $('trainingBounds').onclick=()=>{arm=chooseArm();if(!arm)return;$('lo').value=arm.arm.clip_min;$('hi').value=arm.arm.clip_max;status('');render();};
+ for(const id of ['lo','hi','rawMax']){$(id).oninput=()=>{if(id!=='rawMax'){trainingBounds=false;$('trainingBounds').setAttribute('aria-pressed','false');}if(validBounds())status('');schedule();};}
+ $('trainingBounds').onclick=()=>{arm=chooseArm();if(!arm)return;trainingBounds=!trainingBounds;$('trainingBounds').setAttribute('aria-pressed',String(trainingBounds));if(trainingBounds){$('lo').value=arm.arm.clip_min;$('hi').value=arm.arm.clip_max;}status('');render();};
  $('full').onclick=()=>{if(!record)return;view={x:0,y:0,size:record.grid};render();};$('detail').onclick=()=>{if(!record)return;const size=Math.min(record.grid,250000/record.bin_bp);view={x:(record.grid-size)/2,y:(record.grid-size)/2,size};render();};$('zoom').onchange=()=>{if(record)zoom(record.grid/+ $('zoom').value);};
  $('retry').onclick=()=>catalog&&source?load(record?.start||0):init();
  $('copy').onclick=async()=>{if(!validBounds()){status('Enter valid clipping bounds before copying a link.',true);return;}persist();try{await navigator.clipboard.writeText(location.href);$('copy').textContent='Copied';setTimeout(()=>$('copy').textContent='Copy link',1500);}catch{status('Copy the address from your browser to share this view.');}};
- $('export').onclick=()=>{if(!data)return;const c=document.createElement('canvas');const ids=mode==='compare'?['raw','target','baseline','prediction']:['raw','target','baseline'];c.width=820*ids.length;c.height=1010;const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#1d303c';ctx.font='bold 26px system-ui';ctx.fillText(`${$('region').textContent} · ${$('geometry').textContent}`,35,38);ctx.font='21px system-ui';for(const [i,id] of ids.entries()){ctx.fillText($(id).parentElement.querySelector('h3').textContent,i*820+35,83);ctx.drawImage($(id),i*820,105);}ctx.font='18px system-ui';ctx.fillText(`Comparison clip [${$('lo').value}, ${$('hi').value}] · ${$('targetCaption').textContent} ${mode==='compare'?'· fitting-set predictions':''}`,35,941);ctx.fillText(`${mode==='compare'?`Overfit MSE ${$('mse').textContent} · RMSE ${$('rmse').textContent} · Pearson ${$('pcc').textContent} | `:''}Baseline MSE ${$('baseMse').textContent} · Pearson ${$('basePcc').textContent} | MSE uses the squared clipping range`,35,977);c.toBlob(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Viewer_${record.id}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);});};
+ $('export').onclick=()=>{if(!data)return;const c=document.createElement('canvas');const ids=mode==='compare'?['raw','target','baseline','prediction']:['raw','target','baseline'];c.width=820*ids.length;const trackHeight=signalUI.visible()?528:0;c.height=1010+trackHeight;const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#1d303c';ctx.font='bold 26px system-ui';ctx.fillText(`${$('region').textContent} · ${$('geometry').textContent}`,35,38);ctx.font='21px system-ui';for(const [i,id] of ids.entries()){ctx.fillText($(id).parentElement.querySelector('h3').textContent,i*820+35,83);ctx.drawImage($(id),i*820,105);signalUI.export(ctx,id,i*820,907);}ctx.font='18px system-ui';ctx.fillText(`Comparison clip [${$('lo').value}, ${$('hi').value}] · ${$('targetCaption').textContent} ${mode==='compare'?'· fitting-set predictions':''}`,35,941+trackHeight);ctx.fillText(`${mode==='compare'?`Overfit MSE ${$('mse').textContent} · RMSE ${$('rmse').textContent} · Pearson ${$('pcc').textContent} | `:''}Baseline MSE ${$('baseMse').textContent} · Pearson ${$('basePcc').textContent} | MSE uses the squared clipping range`,35,977+trackHeight);c.toBlob(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Viewer_${record.id}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);});};
  async function loadIndex(path){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),120000);
   try{const response=await fetch(path,{signal:controller.signal});if(!response.ok)throw Error('Could not load the site index. Use Retry.');return await response.json();}
@@ -213,7 +222,7 @@
   if(!globalThis.Worker||!globalThis.DecompressionStream||!globalThis.crypto?.subtle)throw Error('Please use a current Chrome, Edge, Firefox or Safari browser.');
   [catalog,source]=await Promise.all(['capacity/catalog.json','capacity/source.json'].map(loadIndex));
   const chromosomes=[...new Set(M.geometries[0].windows.map(w=>w.chrom))];$('chrom').replaceChildren(...chromosomes.map(c=>option(c,c)));
-  let saved=readView(),found;
+  let saved=readView(),found;trainingBounds=saved?.trainingBounds!==false;
   if(saved?.setting){const s=catalog.settings.find(s=>s.arm.id===+saved.setting);if(s)saved={...saved,method:s.arm.method,rawModel:s.arm.name.startsWith('raw')?s.arm.name:'raw1',formulation:'ratio',view:saved.size?{x:+saved.x||0,y:+saved.y||0,size:+saved.size}:undefined};}
   if(saved?.window)found=M.geometries.flatMap(g=>g.windows).find(w=>w.id===saved.window);
   $('bin').value=found?found.bin_bp/1000:10;$('span').value=found?(found.end-found.start)/1e6:1;$('chrom').value=found?found.chrom:'chr3';

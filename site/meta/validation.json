@@ -1,0 +1,155 @@
+{
+  "checks": [
+    "Two endpoints per PET, including diagonal; unsupported pairs excluded",
+    "DNase coarse means and missing-coverage propagation",
+    "No smoothing: overview retains peaks and zoom selects native cells"
+  ],
+  "status": "PASS",
+  "native": [
+    {
+      "window": "1kb_1Mb_chr3_24000000",
+      "pets": 70473,
+      "endpoint_total": 140946,
+      "dnase_max_basis_error": 1.8250616323767233e-8
+    },
+    {
+      "window": "1kb_2Mb_chr3_24000000",
+      "pets": 126459,
+      "endpoint_total": 252918,
+      "dnase_max_basis_error": 2.2912606145730763e-8
+    },
+    {
+      "window": "1kb_4Mb_chr3_24000000",
+      "pets": 202154,
+      "endpoint_total": 404308,
+      "dnase_max_basis_error": 2.2912606145730763e-8
+    },
+    {
+      "window": "2kb_1Mb_chr3_24000000",
+      "pets": 70473,
+      "endpoint_total": 140946,
+      "dnase_max_basis_error": 2.0750347273779113e-8
+    },
+    {
+      "window": "2kb_2Mb_chr3_24000000",
+      "pets": 126459,
+      "endpoint_total": 252918,
+      "dnase_max_basis_error": 2.0750347273779113e-8
+    },
+    {
+      "window": "2kb_4Mb_chr3_24000000",
+      "pets": 202154,
+      "endpoint_total": 404308,
+      "dnase_max_basis_error": 2.0750347273779113e-8
+    },
+    {
+      "window": "5kb_1Mb_chr3_24000000",
+      "pets": 70473,
+      "endpoint_total": 140946,
+      "dnase_max_basis_error": 9.615073182089873e-9
+    },
+    {
+      "window": "5kb_2Mb_chr3_24000000",
+      "pets": 126459,
+      "endpoint_total": 252918,
+      "dnase_max_basis_error": 9.615073182089873e-9
+    },
+    {
+      "window": "5kb_4Mb_chr3_24000000",
+      "pets": 202154,
+      "endpoint_total": 404308,
+      "dnase_max_basis_error": 9.615073182089873e-9
+    },
+    {
+      "window": "10kb_1Mb_chr3_24000000",
+      "pets": 70473,
+      "endpoint_total": 140946,
+      "dnase_max_basis_error": 2.4138431531373072e-9
+    },
+    {
+      "window": "10kb_2Mb_chr3_24000000",
+      "pets": 126459,
+      "endpoint_total": 252918,
+      "dnase_max_basis_error": 4.6004207943095565e-9
+    },
+    {
+      "window": "10kb_4Mb_chr3_24000000",
+      "pets": 202154,
+      "endpoint_total": 404308,
+      "dnase_max_basis_error": 4.6004207943095565e-9
+    },
+    {
+      "window": "1kb_1Mb_chr4_24000000",
+      "pets": 37291,
+      "endpoint_total": 74582,
+      "dnase_max_basis_error": 1.1971680868860801e-8
+    },
+    {
+      "window": "1kb_2Mb_chr4_24000000",
+      "pets": 83189,
+      "endpoint_total": 166378,
+      "dnase_max_basis_error": 1.539146299300853e-8
+    },
+    {
+      "window": "1kb_4Mb_chr4_24000000",
+      "pets": 186451,
+      "endpoint_total": 372902,
+      "dnase_max_basis_error": 2.6511934647643898e-8
+    },
+    {
+      "window": "2kb_1Mb_chr4_24000000",
+      "pets": 37291,
+      "endpoint_total": 74582,
+      "dnase_max_basis_error": 6.0190429862494454e-9
+    },
+    {
+      "window": "2kb_2Mb_chr4_24000000",
+      "pets": 83189,
+      "endpoint_total": 166378,
+      "dnase_max_basis_error": 8.283628394334386e-9
+    },
+    {
+      "window": "2kb_4Mb_chr4_24000000",
+      "pets": 186451,
+      "endpoint_total": 372902,
+      "dnase_max_basis_error": 8.283628394334386e-9
+    },
+    {
+      "window": "5kb_1Mb_chr4_24000000",
+      "pets": 37291,
+      "endpoint_total": 74582,
+      "dnase_max_basis_error": 2.5873184220093215e-9
+    },
+    {
+      "window": "5kb_2Mb_chr4_24000000",
+      "pets": 83189,
+      "endpoint_total": 166378,
+      "dnase_max_basis_error": 1.056513951325222e-8
+    },
+    {
+      "window": "5kb_4Mb_chr4_24000000",
+      "pets": 186451,
+      "endpoint_total": 372902,
+      "dnase_max_basis_error": 1.056513951325222e-8
+    },
+    {
+      "window": "10kb_1Mb_chr4_24000000",
+      "pets": 37291,
+      "endpoint_total": 74582,
+      "dnase_max_basis_error": 1.3450143082627264e-9
+    },
+    {
+      "window": "10kb_2Mb_chr4_24000000",
+      "pets": 83189,
+      "endpoint_total": 166378,
+      "dnase_max_basis_error": 3.189336628128814e-9
+    },
+    {
+      "window": "10kb_4Mb_chr4_24000000",
+      "pets": 186451,
+      "endpoint_total": 372902,
+      "dnase_max_basis_error": 4.34861437137446e-9
+    }
+  ],
+  "source_sha256": "7ba6ba20ed8c25acc282d03253360ac8edcdce6b9ab1a90832a980cfeaad12c6"
+}

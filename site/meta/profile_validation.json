@@ -1,0 +1,241 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Raw profile retains supported zero partners and counts actual diagonal once per row",
+    "All three map profiles share support and clipping; unavailable expectations stay missing",
+    "Profile Pearson uses only finite selected bins; constant profiles are undefined"
+  ],
+  "native": [
+    {
+      "setting": 1,
+      "window": "1kb_1Mb_chr3_24000000",
+      "grid": 1000,
+      "rows_checked": 27,
+      "profile_milliseconds": 62.007600000000025,
+      "neural_profile_pcc": 0.8734807039238661,
+      "baseline_profile_pcc": 0.7878019542650343,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 500500,
+          "pcc": 0.708104565510731,
+          "mse": 0.009533125776507015,
+          "rmse": 0.09763772721907764,
+          "variance": 0.01903805050837182,
+          "normalizedMse": 0.5007406494858758,
+          "rangeNormalizedMse": 0.009533125776507015,
+          "rangeNormalizedRmse": 0.09763772721907764,
+          "bias": -0.002410262195499508
+        },
+        "baseline": {
+          "pairs": 500500,
+          "pcc": 0.6898808014159532,
+          "mse": 0.010020837056249282,
+          "rmse": 0.10010413106485308,
+          "variance": 0.01903805050837182,
+          "normalizedMse": 0.5263583606862848,
+          "rangeNormalizedMse": 0.010020837056249282,
+          "rangeNormalizedRmse": 0.10010413106485308,
+          "bias": -0.0023016924895219036
+        }
+      }
+    },
+    {
+      "setting": 15,
+      "window": "5kb_1Mb_chr3_24000000",
+      "grid": 200,
+      "rows_checked": 200,
+      "profile_milliseconds": 2.440499999999929,
+      "neural_profile_pcc": 0.9857648000370194,
+      "baseline_profile_pcc": 0.8617483253897604,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 20100,
+          "pcc": 0.8914052239296567,
+          "mse": 0.054844106773990375,
+          "rmse": 0.2341881866661732,
+          "variance": 0.2658237527392165,
+          "normalizedMse": 0.20631755518023476,
+          "rangeNormalizedMse": 0.013711026693497594,
+          "rangeNormalizedRmse": 0.1170940933330866,
+          "bias": 0.011140253158351082
+        },
+        "baseline": {
+          "pairs": 20100,
+          "pcc": 0.7590445015270816,
+          "mse": 0.11395352447901992,
+          "rmse": 0.3375700289999394,
+          "variance": 0.2658237527392165,
+          "normalizedMse": 0.4286807454366683,
+          "rangeNormalizedMse": 0.02848838111975498,
+          "rangeNormalizedRmse": 0.1687850144999697,
+          "bias": -0.02913726052622495
+        }
+      }
+    },
+    {
+      "setting": 29,
+      "window": "1kb_2Mb_chr3_24000000",
+      "grid": 2000,
+      "rows_checked": 27,
+      "profile_milliseconds": 235.1948000000001,
+      "neural_profile_pcc": 0.9342800390567734,
+      "baseline_profile_pcc": 0.7118409636925236,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 2001000,
+          "pcc": 0.5091003035022053,
+          "mse": 0.530762657497756,
+          "rmse": 0.7285345959511847,
+          "variance": 0.7146563036117364,
+          "normalizedMse": 0.7426823982596711,
+          "rangeNormalizedMse": 0.00530762657497756,
+          "rangeNormalizedRmse": 0.07285345959511848,
+          "bias": 0.010138867061754604
+        },
+        "baseline": {
+          "pairs": 2001000,
+          "pcc": 0.468222389890935,
+          "mse": 0.5581657169653592,
+          "rmse": 0.747104890203082,
+          "variance": 0.7146563036117364,
+          "normalizedMse": 0.7810267874844122,
+          "rangeNormalizedMse": 0.005581657169653592,
+          "rangeNormalizedRmse": 0.0747104890203082,
+          "bias": 0.0004249201922387495
+        }
+      }
+    },
+    {
+      "setting": 40,
+      "window": "10kb_1Mb_chr3_24000000",
+      "grid": 100,
+      "rows_checked": 100,
+      "profile_milliseconds": 0.7002999999999702,
+      "neural_profile_pcc": 0.9906283606622425,
+      "baseline_profile_pcc": 0.7511874376119941,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 5050,
+          "pcc": 0.9411900004855418,
+          "mse": 5.395634714314293,
+          "rmse": 2.3228505578952543,
+          "variance": 46.847445774341644,
+          "normalizedMse": 0.11517457622565803,
+          "rangeNormalizedMse": 0.013489086785785732,
+          "rangeNormalizedRmse": 0.1161425278947627,
+          "bias": 0.002566946756721723
+        },
+        "baseline": {
+          "pairs": 5050,
+          "pcc": 0.6073541645899508,
+          "mse": 30.000546843977784,
+          "rmse": 5.477275494621188,
+          "variance": 46.847445774341644,
+          "normalizedMse": 0.640388101167494,
+          "rangeNormalizedMse": 0.07500136710994446,
+          "rangeNormalizedRmse": 0.27386377473105944,
+          "bias": -0.6588947772834044
+        }
+      }
+    },
+    {
+      "setting": 53,
+      "window": "1kb_2Mb_chr3_24000000",
+      "grid": 2000,
+      "rows_checked": 27,
+      "profile_milliseconds": 227.54489999999987,
+      "neural_profile_pcc": 0.9234606811659402,
+      "baseline_profile_pcc": 0.7042715521771343,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 2001000,
+          "pcc": 0.5033347777477521,
+          "mse": 0.44598765867094414,
+          "rmse": 0.6678230743774463,
+          "variance": 0.5969735865787804,
+          "normalizedMse": 0.7470810580194552,
+          "rangeNormalizedMse": 0.004459876586709441,
+          "rangeNormalizedRmse": 0.06678230743774463,
+          "bias": -0.011282178084005317
+        },
+        "baseline": {
+          "pairs": 2001000,
+          "pcc": 0.47608550696364504,
+          "mse": 0.4616718476705141,
+          "rmse": 0.6794643829300504,
+          "variance": 0.5969735865787804,
+          "normalizedMse": 0.7733538937900546,
+          "rangeNormalizedMse": 0.004616718476705141,
+          "rangeNormalizedRmse": 0.06794643829300503,
+          "bias": 0.0006789630796538777
+        }
+      }
+    },
+    {
+      "setting": 65,
+      "window": "1kb_2Mb_chr3_24000000",
+      "grid": 2000,
+      "rows_checked": 27,
+      "profile_milliseconds": 226.43589999999995,
+      "neural_profile_pcc": 0.9497296125991583,
+      "baseline_profile_pcc": 0.7100468488877525,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 1996100,
+          "pcc": 0.5006890824396408,
+          "mse": 0.5039247833080935,
+          "rmse": 0.7098765972393325,
+          "variance": 0.67127098208422,
+          "normalizedMse": 0.7507024685373177,
+          "rangeNormalizedMse": 0.005039247833080935,
+          "rangeNormalizedRmse": 0.07098765972393326,
+          "bias": 0.012562928821708277
+        },
+        "baseline": {
+          "pairs": 1996100,
+          "pcc": 0.4557668772256392,
+          "mse": 0.5318382410538575,
+          "rmse": 0.7292724052463918,
+          "variance": 0.67127098208422,
+          "normalizedMse": 0.7922854633199848,
+          "rangeNormalizedMse": 0.0053183824105385745,
+          "rangeNormalizedRmse": 0.07292724052463917,
+          "bias": 0.0014125390413077881
+        }
+      }
+    },
+    {
+      "setting": 9,
+      "window": "1kb_4Mb_chr3_24000000",
+      "grid": 4000,
+      "rows_checked": 27,
+      "profile_milliseconds": 846.2240000000002,
+      "neural_profile_pcc": 0.41062895592232146,
+      "baseline_profile_pcc": 0.7259631948472787,
+      "unchanged_map_metrics": {
+        "prediction": {
+          "pairs": 8002000,
+          "pcc": 0.652743352206468,
+          "mse": 0.00212003257963481,
+          "rmse": 0.046043811523752136,
+          "variance": 0.0036432642267672,
+          "normalizedMse": 0.5819047007512798,
+          "rangeNormalizedMse": 0.00212003257963481,
+          "rangeNormalizedRmse": 0.046043811523752136,
+          "bias": 0.0016346327407572813
+        },
+        "baseline": {
+          "pairs": 8002000,
+          "pcc": 0.6969739823650297,
+          "mse": 0.001874947365723713,
+          "rmse": 0.043300662416684954,
+          "variance": 0.0036432642267672,
+          "normalizedMse": 0.5146339241464849,
+          "rangeNormalizedMse": 0.001874947365723713,
+          "rangeNormalizedRmse": 0.043300662416684954,
+          "bias": 0.0005124384632499153
+        }
+      }
+    }
+  ]
+}

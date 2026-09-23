@@ -1,5 +1,6 @@
 importScripts('capacity-math.js?v=20260923b', 'capacity-packet.js?v=20260923b', 'comparison.js');
-let current;
+importScripts('map-profiles.js');
+let current,profileRaw,profileCache;
 onmessage = async event => {
   const {id, type, data} = event.data;
   const started = performance.now();
@@ -19,9 +20,14 @@ onmessage = async event => {
     } else if (type === 'init') {
       current = data;
       postMessage({id, result:true});
+    } else if (type === 'profileInit') {
+      profileRaw=data;profileCache=null;postMessage({id,result:true});
     } else if (type === 'metrics') {
       if (!current) throw Error('Select a loaded map before calculating metrics.');
       const result = CapacityMath.compareMaps(current, data.view, data.lo, data.hi);
+      const key=[data.lo,data.hi,data.rawMax].join(':');
+      if(!profileCache||profileCache.key!==key)profileCache={key,value:MapProfiles.compute(current,profileRaw,data.lo,data.hi,data.rawMax)};
+      result.profiles=profileCache.value;
       postMessage({id, result, durationMs:performance.now()-started});
     }
   } catch (error) {

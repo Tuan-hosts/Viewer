@@ -7,7 +7,11 @@ The website is public. No account is needed.
 - **Explore maps:** browse 21,488 observed maps across nuclear chromosomes at 1, 2, 5 and 10 kb, with 1-, 2- and 4-Mb windows.
 - **Compare predictions:** view the saved training target, a target-matched distance + DNase baseline, and the neural overfit prediction alongside the raw observation. There are 72 settings and 5,376 fitting-window predictions on chr3 and chr4.
 
-Clipping limits stay fixed until changed. The comparison metrics use identical clipping bounds for both maps. MSE is divided by the squared range. The overfit results measure memorization of the fitting regions, not held-out prediction.
+Training bounds are selected automatically by default. Editing a limit switches to custom bounds. The comparison metrics use identical clipping bounds for both maps. MSE is divided by the squared range. The overfit results measure memorization of the fitting regions, not held-out prediction.
+
+DNase tracks use the matched K562.bw, displayed as ln(1 + mean signal). Raw PET-end coverage is shown in ends per kb. Separate panel profiles compare the displayed target, baseline and prediction on matched scales. All tracks follow the horizontal genomic axis.
+
+Detailed definitions and source notes are retained in `site/meta/viewer-methods.json`, outside the visible interface. The binned endpoint track is not exact cLoops2 RPM; the source .hic does not retain basewise PET coordinates.
 
 ## Run locally
 
