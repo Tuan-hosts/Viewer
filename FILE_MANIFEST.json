@@ -2,7 +2,7 @@
   "status": "VALIDATED",
   "maps": 21488,
   "chromosome_packets": 96,
-  "total_bytes": 213094099,
+  "total_bytes": 214652987,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -13,6 +13,26 @@
       "file": "site/app-v2.js",
       "bytes": 37342,
       "sha256": "a4b34f1206be46cd1ff43d8ea010c3f54a814b9b1344c720238fd9e50a261536"
+    },
+    {
+      "file": "site/capacity/catalog.json",
+      "bytes": 1541248,
+      "sha256": "4dcebd438c5905dd11cc92a533f4fa269561169e4919b24ab7b96de9941ba544"
+    },
+    {
+      "file": "site/capacity/source.json",
+      "bytes": 112,
+      "sha256": "53b33bc9ff8ed605b4c354cfd3d4eb1bcef55f9472a271bb12a10f3ee66e7395"
+    },
+    {
+      "file": "site/capacity/validation.json",
+      "bytes": 1910,
+      "sha256": "5fcacde013f90d56bb38cb6f69806e840a2d8fccc8f119d447b19b10e01202c5"
+    },
+    {
+      "file": "site/capacity-math.js",
+      "bytes": 3107,
+      "sha256": "f915e799cd4d7e9a7669a8d73983fa40148492b0d5435c4a0f73f2accaf86edb"
     },
     {
       "file": "site/comparison.js",
@@ -541,8 +561,8 @@
     },
     {
       "file": "site/index.html",
-      "bytes": 22065,
-      "sha256": "148c8548f14591b09fe74c913a553efc247151a93818418afd8c2488e432170d"
+      "bytes": 6970,
+      "sha256": "20201e0482a787162280cbd067a2d2e10e2d9eb1cfd5506419b06e144b77dceb"
     },
     {
       "file": "site/normalization.js",
@@ -551,8 +571,8 @@
     },
     {
       "file": "site/README.md",
-      "bytes": 5831,
-      "sha256": "d78195dcadf1a1a5933f057869c0eb6ade2a7f87554fcba035d6bdbfd9874875"
+      "bytes": 5990,
+      "sha256": "6cf05ae91cec125997faa71cc7df7bf7e0df5fc809b51fef6b94050fecf96eec"
     },
     {
       "file": "site/style.css",
@@ -563,6 +583,24 @@
       "file": "site/VALIDATION_REPORT.md",
       "bytes": 4422,
       "sha256": "dedb21fde6c39e21dc20df2711a68321c0181261d955156f4f9b72673dfea91e"
+    },
+    {
+      "file": "site/viewer-v3.css",
+      "bytes": 4966,
+      "sha256": "4fa293c121f38344d0b3ddd9b3775f2e0281987cf958e98ad81f7161bc7561ff"
+    },
+    {
+      "file": "site/viewer-v3.js",
+      "bytes": 21011,
+      "sha256": "c8cce63fe4014236f2f4c1f244e649ef0845cb84bcbe17a47cd3f50ecc505af1"
+    },
+    {
+      "file": "site/viewer-worker.js",
+      "bytes": 1470,
+      "sha256": "7cd49419f9ca925c65b9a912f8d3ff7fa3b2c3fb41378476610bc08ad8a4c658"
     }
-  ]
+  ],
+  "prediction_settings": 72,
+  "prediction_windows": 5376,
+  "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d"
 }

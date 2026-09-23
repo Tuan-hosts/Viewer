@@ -1,12 +1,13 @@
 # K562 HiTrAC Viewer
 
-An interactive viewer for K562 contact maps, normalization and a distance/DNase baseline.
+[Open the Viewer](https://tuan-hosts.github.io/Viewer/) · [Methods](site/README.md) · [Verification](site/capacity/validation.json)
 
-[Open the viewer](https://tuan-hosts.github.io/Viewer/) · [User guide](site/README.md) · [Validation](site/VALIDATION_REPORT.md)
+The website is public. No account is needed.
 
-The website and repository are public. No account is needed.
+- **Explore maps:** browse 21,488 observed maps across nuclear chromosomes at 1, 2, 5 and 10 kb, with 1-, 2- and 4-Mb windows.
+- **Compare predictions:** view the saved training target, a target-matched distance + DNase baseline, and the neural overfit prediction alongside the raw observation. There are 72 settings and 5,376 fitting-window predictions on chr3 and chr4.
 
-**21,488 maps** cover 1/2/5/10-kb bins and 1/2/4-Mb windows across the nuclear chromosomes. ChrY is marked unavailable for scoring because its reference-support mask is missing; chrM has no usable matrix.
+Clipping limits stay fixed until changed. The comparison metrics use identical clipping bounds for both maps. MSE is divided by the squared range. The overfit results measure memorization of the fitting regions, not held-out prediction.
 
 ## Run locally
 
@@ -14,16 +15,18 @@ The website and repository are public. No account is needed.
 python -m http.server 8000 --bind 127.0.0.1 --directory site
 ```
 
-Open http://127.0.0.1:8000 in Chrome or Edge.
+Open http://127.0.0.1:8000 in a current Chrome, Edge or Firefox browser. Prediction packets are downloaded from the pinned public data commit when selected; an internet connection is required.
 
 ## Source files
 
-- `app-v2.js`: controls, linked views and exports.
-- `genome.js`: chromosome downloads, integrity checks and window extraction.
-- `normalization.js`: expected counts and log transformations.
-- `comparison.js`: baseline predictions and Pearson calculations in a background worker.
-- `heatmap-v2.js`: map rendering.
-- `core.js`: count lookup, clipping summaries and shared helpers.
-- `data/`: compressed chromosome counts and endpoint features.
+- `site/viewer-v3.js`: controls, linked views, rendering and exports.
+- `site/viewer-worker.js`: map calculations and metrics off the main browser thread.
+- `site/capacity-math.js`: native-bin clipping, MSE, RMSE, Pearson and baseline evaluation.
+- `site/genome.js`: chromosome downloads, integrity checks and window extraction.
+- `site/comparison.js`: original normalization and exploratory baseline calculations.
+- `site/capacity/`: prediction catalog, pinned data source and verification receipt.
+- `site/data/`: genome-wide count packets and endpoint features.
 
-Map calculations use the original counts and fitted baseline coefficients. Changes to wording and source formatting do not change their results. Deployment verifies the site against `FILE_MANIFEST.json`.
+Lossless prediction packets are stored separately on the `capacity-data-20260923` branch, keeping the Pages site small. The interface downloads only the selected window and checks its SHA-256 hash. Deployment verifies every site file against `FILE_MANIFEST.json`.
+
+ChrY remains unavailable for scoring because its reference-support mask is missing. ChrM has no usable matrix. Existing observations and normalization references were preserved.

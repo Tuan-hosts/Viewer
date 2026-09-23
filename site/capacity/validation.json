@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "checked_utc": "2026-09-23T14:27:38.982898+00:00",
+  "settings": 72,
+  "prediction_windows": 5376,
+  "data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
+  "packets": {
+    "passed": true,
+    "settings": 72,
+    "packets": 5376,
+    "decoded_examples": 73,
+    "metric_fixtures": 219,
+    "lossless": true
+  },
+  "numerical": {
+    "passed": true,
+    "fixtures": 219,
+    "model_comparisons": 438,
+    "checks": [
+      "native Float32 lossless decoding",
+      "identical clipping for predictions and labels",
+      "range-normalized MSE and RMSE",
+      "Pearson",
+      "partial viewports and mirrored-pair deduplication",
+      "target-matched baseline",
+      "supported zeros and diagonal"
+    ]
+  },
+  "preserved_observations": {
+    "passed": true,
+    "unchanged_original_files": 110,
+    "original_commit": "df03e3bd11842322ead553c7a07d21e4f9f603d0"
+  },
+  "interface_checks": [
+    "Explore/Compare mode toggle",
+    "Fitting regions restricted to chr3 and chr4 in comparison mode",
+    "Six matching training targets across 12 geometries",
+    "Clipping limits and zoom retained across target changes",
+    "Raw reference color limit separate from comparison metrics",
+    "Native 4000-by-4000 rendering and metrics",
+    "Clipped MSE, RMSE and Pearson for model and matched baseline",
+    "Desktop four-column and narrow stacked layouts",
+    "Rapid initialization control changes guarded",
+    "Public prediction packet hash and cross-origin access"
+  ],
+  "known_reference": {
+    "setting": 40,
+    "window": "10kb_1Mb_chr3_24000000",
+    "bounds": [
+      -10,
+      10
+    ],
+    "pairs": 5050,
+    "prediction_mse": 0.0134890867857857,
+    "prediction_pearson": 0.94119000048555,
+    "baseline_mse": 0.07500136710994446,
+    "baseline_pearson": 0.60735416458995
+  },
+  "scope": "Fitting-set capacity predictions; these checks do not establish generalization."
+}
