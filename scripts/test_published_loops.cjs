@@ -4,14 +4,14 @@ const colors=require('../site/map-colors.js'),loops=require('../site/published-l
 let checks=0;
 function eq(a,b){assert.deepEqual(a,b);checks++;}
 function rgb(v,s=true,lo=-5,hi=5){const p=new Uint8ClampedArray(4);colors.write(p,0,v,s,lo,hi);return [...p];}
-eq(rgb(-5),[0,0,255,255]);eq(rgb(0),[255,255,255,255]);eq(rgb(5),[255,0,0,255]);
-eq(rgb(-2.5),[128,128,255,255]);eq(rgb(2.5),[255,128,128,255]);
+eq(rgb(-5),[255,255,255,255]);eq(rgb(0),[255,128,128,255]);eq(rgb(5),[255,0,0,255]);
+eq(rgb(-2.5),[255,191,191,255]);eq(rgb(2.5),[255,64,64,255]);
 eq(rgb(-100),rgb(-5));eq(rgb(100),rgb(5));eq(rgb(-Infinity),rgb(-5));eq(rgb(Infinity),rgb(5));
-eq(rgb(-5,false),rgb(NaN));eq(rgb(NaN),rgb(0));
+eq(rgb(-5,false),rgb(NaN));eq(rgb(NaN),rgb(-5));
 eq(rgb(0,true,0,5),[255,255,255,255]);eq(rgb(0,true,1,5),[255,255,255,255]);
 eq(rgb(2.5,true,0,5),[255,128,128,255]);
-eq(rgb(-1,true,-2,8),[128,128,255,255]);eq(rgb(4,true,-2,8),[255,128,128,255]);
-assert(colors.gradient(-2,8).includes('#ffffff 20%'));checks++;
+eq(rgb(-1,true,-2,8),[255,230,230,255]);eq(rgb(4,true,-2,8),[255,102,102,255]);
+eq(colors.gradient(-2,8),'linear-gradient(90deg,#ffffff 0%,#ff0000 100%)');
 assert(!colors.gradient(0,5).includes('0,0,255'));checks++;
 const plot={x:73,y:18,size:704},record={start:1000000,bin_bp:1000},view={x:0,y:0,size:1000};
 const anchors=[[1100000,1110000,1200000,1220000]];

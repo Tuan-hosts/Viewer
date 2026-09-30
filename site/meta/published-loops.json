@@ -151,8 +151,9 @@
       }
     }
   },
-  "display": "Explore maps only; optional purple anchor rectangles mirrored across the diagonal. All three panels share identical reference coordinates. Anchor overlap with the current viewport controls visibility. Counts deduplicate mirrored boxes. Tiny anchors have a six-canvas-pixel minimum marker size; coordinates themselves stay exact.",
+  "display": "Explore maps and Compare predictions; optional mirrored purple anchor outlines on every panel, including the overfit prediction. Coordinate-based visibility and unique loop counts. Published and newly reconstructed references are kept distinct.",
   "caveat": "Published K562 reference calls are not newly called loops from the current Meiyuan-processed K562.hic and are not an independent biological truth set.",
-  "colors": "Negative values fade from blue (#0000FF) to white at zero; positive values fade from white to red (#FF0000). The negative and positive limits scale each side separately. Exact zero remains white. Unsupported/NaN cells stay white. Supported -Infinity in ln(O/E) uses the chosen lower bound. Legend zero position accounts for asymmetric limits. This is a rendering change only; existing clipping and metrics are unchanged.",
-  "source_assembly_evidence": "Hi-TrAC Nature Communications Methods: Human genome version hg38; inputs in other versions converted to hg38. Retained paper.xml."
+  "colors": "White (#FFFFFF) at the selected minimum to red (#FF0000) at the maximum, with a linear shared scale. Unsupported/NaN cells stay white. Supported -Infinity uses the selected lower bound. Existing stored maps, clipping and metrics are unchanged.",
+  "source_assembly_evidence": "Hi-TrAC Nature Communications Methods: Human genome version hg38; inputs in other versions converted to hg38. Retained paper.xml.",
+  "reconstructed_reference": "See loops-reprocessed/manifest.json. Unavailable calls are explicitly pending; no published-data fallback."
 }

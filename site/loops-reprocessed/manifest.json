@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "cell": "K562",
+  "assembly": "hg38",
+  "ready": false,
+  "packets": {},
+  "reference": "cLoops2 on Meiyuan-style reconstructed K562 PETs",
+  "source": "Six public untreated K562 libraries from PRJNA746963: SRR15150405, SRR15150406, SRR15150407, SRR15150414, SRR15150415, SRR15150416.",
+  "processing": "fastp 0.24.0 linker trimming; bwa mem 0.7.17 -5SP against GENCODE48 GRCh38; per-run Picard 3.3.0 duplicate removal; samtools 1.21 MAPQ>=30 and -F2316; pairtools 1.1.0 UU selection; pool retained pairs. No additional coordinate deduplication or singleton filter for loop calling.",
+  "calling": "Original cLoops2 core, eps 200/500/1000/2000 bp, minPts 10, PET separation >=5 kb; full chromosomes and their original backgrounds. Standard significant calls, local permutation FDR<0.01, loop midpoint separation >=5 kb. No 20-kb postfilter.",
+  "caveat": "Preparation pending. These will be newly called experimental reference loops, not loops called from the neural prediction, and not the published Supplementary Data 3 calls. Public SRA read names lack optical-duplicate coordinates; exact equivalence to Meiyuan's original K562.hic is not established."
+}

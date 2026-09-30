@@ -4,7 +4,8 @@
  const signalUI=SignalTracks.attach({onSelect:selectDnaseInterval});
  const names={raw:'No normalization',observed:'Shared observed distance',shuffled:'Shuffled endpoints',plb:'Local PLB',window:'Within-window distance'};
  let trainingBounds=true;
- let publishedLoops=false,loopData=null,loopController=null,loopRequest=0,loopGeometry=null;
+ let publishedLoops=false,loopReference='published',loopData=null,loopController=null,loopRequest=0,loopGeometry=null;
+ const loopLabel=()=>loopReference==='reprocessed'?'Reprocessed loops':'Published loops';
  let mode="compare",catalog,source,record,arm,data=null,view={x:0,y:0,size:100},version=0,worker=null,serial=0,pending=new Map(),metricTimer,metricVersion=0,renderPending=false;
  let loadController=null, preparedWindow=null, metricBusy=false, metricQueued=null, metricKey=null;
  const pixelCache=new WeakMap(), drawCache=new WeakMap();let screenCache=null;
@@ -30,7 +31,7 @@
   $('exploreMode').setAttribute('aria-pressed',String(!compare));$('compareMode').setAttribute('aria-pressed',String(compare));
   $('presetLabel').hidden=!compare;$('methodLabel').hidden=compare;$('rawLabel').hidden=true;
   $('formLabel').hidden=compare||$('method').value==='raw';$('trainingBounds').hidden=!compare;$('fittingLabel').hidden=compare;
-  $('publishedLoops').hidden=compare;$('loopStatus').hidden=compare||!publishedLoops;
+  $('publishedLoops').hidden=false;$('loopStatus').hidden=!publishedLoops;
   $('modeHint').textContent=compare?'Fitted regions · matched targets and predictions':'All chromosomes · observed-map normalization';
   const previous=$('chrom').value,chromosomes=[...new Set(M.geometries[0].windows.map(w=>w.chrom))].filter(c=>!compare||c==='chr3'||c==='chr4');
   $('chrom').replaceChildren(...chromosomes.map(c=>option(c,c)));$('chrom').value=chromosomes.includes(previous)?previous:compare?'chr3':chromosomes[0];
@@ -49,7 +50,7 @@
  }
  function persist(){
   if(!record||!validBounds())return;
-  const s={mode,trainingBounds,publishedLoops,window:record.id,method:$('method').value,formulation:$('formulation').value,rawModel:$('rawModel').value,min:+ $('lo').value,max:+ $('hi').value,rawMax:+ $('rawMax').value,fitting:$('fitting').checked,view:{...view}};
+  const s={mode,trainingBounds,publishedLoops,loopReference,window:record.id,method:$('method').value,formulation:$('formulation').value,rawModel:$('rawModel').value,min:+ $('lo').value,max:+ $('hi').value,rawMax:+ $('rawMax').value,fitting:$('fitting').checked,view:{...view}};
   history.replaceState(null,'','#view='+encodeURIComponent(JSON.stringify(s)));
   try{localStorage.setItem('activehitrac.viewer.clipping.v1',JSON.stringify({min:s.min,max:s.max}));}catch{}
  }
@@ -88,7 +89,7 @@
   if(!catalog)return;
   const started=performance.now(),v=++version,previousWindow=record?.id,previousView={...view};
   loopController?.abort();++loopRequest;loopData=null;loopGeometry=null;
-  if(publishedLoops&&mode==='explore')$('loopStatus').textContent='Loading published loops…';
+  if(publishedLoops)$('loopStatus').textContent=`Loading ${loopLabel().toLowerCase()}…`;
   loadController?.abort();const controller=new AbortController();loadController=controller;
   terminate();clearMetrics();data=null;
   for(const id of ['raw','target','baseline','prediction'])drawCache.delete($(id));
@@ -137,15 +138,15 @@
  }
  function constrain(){if(!record)return;const n=record.grid;view.size=clip(Number(view.size)||n,Math.min(10,n),n);view.x=clip(Number(view.x)||0,0,n-view.size);view.y=clip(Number(view.y)||0,0,n-view.size);}
  async function loadPublishedLoops(){
-  if(!publishedLoops||mode!=='explore'||!record||!data)return;
+  if(!publishedLoops||!record||!data)return;
   loopController?.abort();const controller=new AbortController();loopController=controller;
   const request=++loopRequest,selected=record,activeVersion=version;
-  $('loopStatus').hidden=false;$('loopStatus').textContent='Loading published loops…';
+  $('loopStatus').hidden=false;$('loopStatus').textContent=`Loading ${loopLabel().toLowerCase()}…`;
   try {
-   const loops=await PublishedLoops.load(selected,controller.signal);
-   if(request!==loopRequest||activeVersion!==version||!publishedLoops||mode!=='explore')return;
+   const loops=await PublishedLoops.load(selected,controller.signal,loopReference);
+   if(request!==loopRequest||activeVersion!==version||!publishedLoops)return;
    loopData=loops;schedule();
-  }catch(error){if(error.name!=='AbortError'&&request===loopRequest&&activeVersion===version){$('loopStatus').textContent='Published loops unavailable — toggle to retry';console.warn(error.message);}}
+  }catch(error){if(error.name!=='AbortError'&&request===loopRequest&&activeVersion===version){$('loopStatus').textContent=error.message;}}
  }
  const plot={x:73,y:18,size:704};
  function screenIndices(){
@@ -163,7 +164,7 @@
   const canvas=$(id),ctx=canvas.getContext('2d');
   if(!values||!record){drawCache.delete(canvas);ctx.fillStyle='#fff';ctx.fillRect(0,0,800,800);ctx.fillStyle='#7b8991';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText(id==='prediction'?'No prediction for this selection':'Select a window',400,390);return;}
   const indices=screenIndices(),last=drawCache.get(canvas);
-  const overlay=mode==='explore'&&publishedLoops?loopData:null;
+  const overlay=publishedLoops?loopData:null;
   if(last&&last.values===values&&last.support===support&&last.low===low&&last.high===high&&last.indices===indices&&last.overlay===overlay)return;
   drawCache.set(canvas,{values,support,low,high,indices,overlay});
   ctx.fillStyle='#fff';ctx.fillRect(0,0,800,800);
@@ -178,8 +179,8 @@
   canvas.title='Teal axis rectangles: provisional DNase peaks from K562.bw (fixed training p95, 100-bp intervals).';
  }
  function drawAll(){const [lo,hi]=bounds();
-  loopGeometry=mode==='explore'&&publishedLoops&&loopData&&record?PublishedLoops.rectangles(loopData,record,view,plot):null;
-  if(loopGeometry)$('loopStatus').textContent=`${loopGeometry.count.toLocaleString()} published loops visible · purple outlines`;
+  loopGeometry=publishedLoops&&loopData&&record?PublishedLoops.rectangles(loopData,record,view,plot):null;
+  if(loopGeometry)$('loopStatus').textContent=`${loopGeometry.count.toLocaleString()} ${loopLabel().toLowerCase()} visible · purple outlines`;
   draw('raw',data?.raw,data?.rawSupport,0,+ $('rawMax').value);for(const id of (mode==='compare'?['target','baseline','prediction']:['target','baseline']))draw(id,data?.[id],data?.valid,lo,hi);signalUI.update(data?.signals,record,view,{lo,hi,rawMax:+$('rawMax').value});}
  function showMetrics(result,job){
   signalUI.setProfiles(result.profiles,record.id);
@@ -208,9 +209,8 @@
   document.querySelectorAll('.lower').forEach(e=>e.textContent=$('lo').value);document.querySelectorAll('.upper').forEach(e=>e.textContent=$('hi').value);$('rawLegend').textContent=$('rawMax').value;
   for(const id of ['raw','target','baseline','prediction']){
    const [a,b]=id==='raw'?[0,+$('rawMax').value]:bounds(),legend=$(id).parentElement.querySelector('.legend'),bar=legend.querySelector('i');
-   bar.style.background=MapColors.gradient(a,b);legend.title='Blue: negative · White: zero · Red: positive';
-   let zero=legend.querySelector('.zero');if(!zero){zero=document.createElement('small');zero.className='zero';zero.textContent='0';bar.append(zero);}
-   zero.hidden=!(a<0&&b>0);zero.style.left=`${100*(-a)/(b-a)}%`;
+   bar.style.background=MapColors.gradient(a,b);legend.title='White: minimum · Red: maximum';
+   legend.querySelector('.zero')?.remove();
   }
   if(record)$('zoom').value=[1,2,4,8,16,32].reduce((a,b)=>Math.abs(b-record.grid/view.size)<Math.abs(a-record.grid/view.size)?b:a);
   persist();$('export').disabled=!data;if(!data)return;
@@ -232,6 +232,7 @@
  for(const id of ['bin','span','chrom','method','formulation','rawModel','fitting'])$(id).onchange=()=>load(record?.start||0);
  $('exploreMode').onclick=()=>switchMode('explore');$('compareMode').onclick=()=>switchMode('compare');
  $('publishedLoops').onclick=()=>{publishedLoops=!publishedLoops;$('publishedLoops').setAttribute('aria-pressed',String(publishedLoops));$('loopStatus').hidden=!publishedLoops;loopController?.abort();++loopRequest;loopData=null;render();if(publishedLoops)loadPublishedLoops();};
+ $('loopReference').onchange=()=>{loopReference=$('loopReference').value;$('publishedLoops').textContent=loopLabel();loopController?.abort();++loopRequest;loopData=null;render();if(publishedLoops)loadPublishedLoops();};
  $('preset').onchange=()=>{const name=$('preset').value;$('method').value=name.startsWith('raw')?'raw':name;if(name.startsWith('raw'))$('rawModel').value=name;$('formulation').value='ratio';load(record?.start||0);};
  $('window').onchange=()=>load();for(const [id,d] of [['prev',-1],['next',1]])$(id).onclick=()=>{const s=$('window');s.selectedIndex=clip(s.selectedIndex+d,0,s.options.length-1);load();};
  for(const id of ['lo','hi','rawMax']){$(id).oninput=()=>{if(id!=='rawMax'){trainingBounds=false;$('trainingBounds').setAttribute('aria-pressed','false');}if(validBounds())status('');schedule();};}
@@ -252,7 +253,8 @@
   if(!globalThis.Worker||!globalThis.DecompressionStream||!globalThis.crypto?.subtle)throw Error('Please use a current Chrome, Edge, Firefox or Safari browser.');
   [catalog,source]=await Promise.all(['capacity/catalog.json','capacity/source.json'].map(loadIndex));
   const chromosomes=[...new Set(M.geometries[0].windows.map(w=>w.chrom))];$('chrom').replaceChildren(...chromosomes.map(c=>option(c,c)));
-  let saved=readView(),found;trainingBounds=saved?.trainingBounds!==false;publishedLoops=saved?.publishedLoops===true;
+  let saved=readView(),found;trainingBounds=saved?.trainingBounds!==false;publishedLoops=saved?.publishedLoops===true;loopReference=saved?.loopReference==='reprocessed'?'reprocessed':'published';
+  $('loopReference').value=loopReference;$('publishedLoops').textContent=loopLabel();
   $('publishedLoops').setAttribute('aria-pressed',String(publishedLoops));
   if(saved?.setting){const s=catalog.settings.find(s=>s.arm.id===+saved.setting);if(s)saved={...saved,method:s.arm.method,rawModel:s.arm.name.startsWith('raw')?s.arm.name:'raw1',formulation:'ratio',view:saved.size?{x:+saved.x||0,y:+saved.y||0,size:+saved.size}:undefined};}
   if(saved?.window)found=M.geometries.flatMap(g=>g.windows).find(w=>w.id===saved.window);

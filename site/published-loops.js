@@ -1,18 +1,25 @@
 (function(root) {
   'use strict';
-  let manifest;
+  const manifests=new Map();
   const cache=new Map();
-  async function load(record,signal) {
+  async function load(record,signal,reference='published') {
+    if(!['published','reprocessed'].includes(reference))throw Error('Unknown loop reference');
+    const directory=reference==='published'?'loops':'loops-reprocessed';
+    let manifest=manifests.get(reference);
     if(!manifest) {
-      const response=await fetch('loops/manifest.json',{signal});
-      if(!response.ok)throw Error('Published loop index unavailable');
+      const response=await fetch(`${directory}/manifest.json`,{signal});
+      if(!response.ok)throw Error('Loop reference unavailable');
       const m=await response.json();
-      if(m.assembly!=='hg38'||m.cell!=='K562')throw Error('Published loop reference mismatch');
+      if(m.assembly!=='hg38'||m.cell!=='K562')throw Error('Loop reference mismatch');
+      if(m.ready===false)throw Error('Reprocessed PET loops are still being prepared');
       manifest=m;
+      manifests.set(reference,m);
     }
     const entry=manifest.packets[record.chrom];
     if(!entry)return [];
-    if(cache.has(record.chrom))return cache.get(record.chrom);
+    const key=`${reference}:${record.chrom}`;
+    if(cache.has(key))return cache.get(key);
+    if(!entry.file.startsWith(`${directory}/`)||entry.file.includes('..'))throw Error('Invalid loop packet path');
     const response=await fetch(entry.file,{signal});
     if(!response.ok)throw Error('Published loops unavailable');
     const bytes=await response.arrayBuffer();
@@ -26,7 +33,7 @@
       if(!Array.isArray(v)||v.length!==4||!v.every(Number.isInteger)||v[0]<0||v[0]<previous||v[1]<v[0]||v[2]<v[0]||v[3]<v[2])throw Error('Invalid published loop anchors');
       previous=v[0];
     }
-    cache.set(record.chrom,loops);
+    cache.set(key,loops);
     while(cache.size>2)cache.delete(cache.keys().next().value);
     return loops;
   }

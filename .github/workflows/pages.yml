@@ -34,7 +34,7 @@ jobs:
         run: node scripts/test_peak_axes.cjs
       - name: Verify DNase selection coordinates
         run: node scripts/test_dnase_selection.cjs
-      - name: Verify published loops and zero-centered colors
+      - name: Verify loop coordinates and white-to-red colors
         run: node scripts/test_published_loops.cjs
       - uses: actions/upload-pages-artifact@v4
         with:
