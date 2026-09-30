@@ -5,7 +5,7 @@
   "prediction_settings": 72,
   "prediction_windows": 5376,
   "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
-  "total_bytes": 223759761,
+  "total_bytes": 223759706,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -580,7 +580,7 @@
     {
       "file": "site/index.html",
       "bytes": 6511,
-      "sha256": "82b751d0fb4b06261a9a81d37d192a719593c94504e87af76f6964b40fe9ce9a"
+      "sha256": "fa9d6c35ca70fa62eff95b778e804957f2eb9efc0d29884d24ae9d371e999af2"
     },
     {
       "file": "site/map-profiles.js",
@@ -899,8 +899,8 @@
     },
     {
       "file": "site/viewer-v3.js",
-      "bytes": 24931,
-      "sha256": "cafe6f7d0c9f46604486db26c09211d6850ea4973aeebc6e6120bf858d8c6163"
+      "bytes": 24876,
+      "sha256": "5291e04edc3b12695de6f1a9713a8df651e83f4f42c69dedebb59d9fcf65977d"
     },
     {
       "file": "site/viewer-worker.js",

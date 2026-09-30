@@ -78,7 +78,7 @@
  function populateWindows(start){
   arm=chooseArm();const eligible=new Set((arm||catalog.settings.find(s=>s.arm.geometry===geometry().id))?.windows.map(w=>w.id)||[]);
   const choices=geometry().windows.filter(w=>w.chrom===$('chrom').value&&(!(mode==='compare'||$('fitting').checked)||eligible.has(w.id)));
-  $('window').replaceChildren(...choices.map(w=>option(`${mb(w.start)}–${mb(w.end)} Mb${mode==='explore'&&eligible.has(w.id)?' · fitted':''}`,w.id)));
+  $('window').replaceChildren(...choices.map(w=>option(`${mb(w.start)}–${mb(w.end)} Mb`,w.id)));
   const selected=choices.find(w=>w.start<=start&&start<w.end)||choices[0];if(selected)$('window').value=selected.id;
   $('window').disabled=!selected;return selected;
  }
