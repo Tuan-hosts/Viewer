@@ -5,7 +5,7 @@
   "prediction_settings": 72,
   "prediction_windows": 5376,
   "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
-  "total_bytes": 225220336,
+  "total_bytes": 225219274,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -579,8 +579,8 @@
     },
     {
       "file": "site/index.html",
-      "bytes": 7013,
-      "sha256": "d7defcc681d56727c993b9b6f19f29f6064aeb2b56d34a745c1baad63a19f4da"
+      "bytes": 6813,
+      "sha256": "529984c2883ce8f900f8470878f4668477656914d75cda217e11dae02aab4e34"
     },
     {
       "file": "site/loops/chr1.json.gz",
@@ -734,8 +734,8 @@
     },
     {
       "file": "site/meta/published-loops.json",
-      "bytes": 6276,
-      "sha256": "eaad19a3f5990747535d8d80b935eba4847a9b1e177b4bb93219daef464a6f35"
+      "bytes": 6316,
+      "sha256": "11ea41dbd0792d67d457bd0f4df412936fa06465e1af12ab169ffad90dc125f8"
     },
     {
       "file": "site/meta/validation.json",
@@ -759,13 +759,13 @@
     },
     {
       "file": "site/published-loops.js",
-      "bytes": 3740,
-      "sha256": "eee9cf976cc1851416489cf2feb77578c92031b1fd952779c4570b8de8d4483d"
+      "bytes": 3598,
+      "sha256": "befaf9e34fa45d6c046cf56275fa46dee34cdfeaa434947c16f2bad24c473703"
     },
     {
       "file": "site/README.md",
-      "bytes": 7635,
-      "sha256": "2e8d761dab1d1e64a67feda703ecb9e746f9c3207a8d6e85f183143eca0197cb"
+      "bytes": 7733,
+      "sha256": "d3a1332075f6ebf155c9e7a390e45543b2d5d63624e395069b8a31b808742950"
     },
     {
       "file": "site/signal-tracks.js",
@@ -1034,13 +1034,13 @@
     },
     {
       "file": "site/viewer-v3.css",
-      "bytes": 7483,
-      "sha256": "8fa9d7443239ae89d511009802deef2e15bd377b96492ff2f7b9f787b21d6926"
+      "bytes": 7323,
+      "sha256": "dd61c38b60d1da5ce5aea63564acf563cb80611dc52cd33a06b94ba4f4361089"
     },
     {
       "file": "site/viewer-v3.js",
-      "bytes": 27476,
-      "sha256": "356b76837a8602bb2feeaaefe7e3d033b242712c362eae73a61717ae83cbf650"
+      "bytes": 26778,
+      "sha256": "32b691154dd8bff6797afa69bdc53b3ceda927b0c15f2e4491d3ed26d9bf74ce"
     },
     {
       "file": "site/viewer-worker.js",

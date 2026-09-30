@@ -4,7 +4,7 @@
 
 The website is public. No account is needed.
 
-In **Explore maps** and **Compare predictions**, the **Published loops** button overlays the original K562 Hi-TrAC loop anchors from the paper's Supplementary Data 3. Purple outlines follow genomic coordinates through zoom and bin-width changes on every panel, including the overfit prediction. The reference is loaded only when enabled, with checked chromosome downloads. The separate **Reprocessed K562** reference is reserved for cLoops2 calls from the Meiyuan-style public-read reconstruction; it explicitly reports pending preparation until verified calls are available. It never substitutes published calls. Provenance and display details are in `site/meta/published-loops.json` and `site/loops-reprocessed/manifest.json`.
+In **Explore maps** and **Compare predictions**, **Show loops** overlays cLoops2 calls from the Meiyuan-style K562 PET reconstruction. Purple anchor outlines follow genomic coordinates through zoom and bin-width changes on every panel, including the overfit prediction. Only verified reconstructed-PET loop packets are loaded. While processing is incomplete, the control reports that loops are being prepared. The original published-loop option has been removed, including selection through historical links. Processing provenance is retained in `site/loops-reprocessed/manifest.json` and `site/meta/published-loops.json`.
 
 All maps use white at the selected minimum and red at the selected maximum. Supported negative infinity in ln(O/E) renders at the selected lower bound; missing cells remain white. Colors and overlays do not change stored maps or comparison metrics.
 

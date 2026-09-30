@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="viewer-v3.css?v=20260930white"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="viewer-v3.css?v=20260930loops"></head>
 <body data-mode="compare">
 <header><div><p class="eyebrow">ACTIVEHITRAC</p><h1>Viewer <span>K562</span></h1><p>Explore contact maps and compare predictions.</p></div><a href="https://github.com/Tuan-hosts/Viewer" target="_blank" rel="noopener">GitHub ↗</a></header>
 <main>
@@ -25,7 +25,7 @@
 <div class="status-line"><p id="status" role="status" aria-live="polite">Loading maps…</p><button id="retry" hidden>Retry</button></div><output id="diagnostics" hidden></output>
 <section class="map-section">
  <div class="region-heading"><div><h2 id="region">K562</h2><p id="geometry"></p></div><div class="view-tools"><button id="full">Full window</button><button id="detail">250-kb detail</button><label>Zoom<select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option><option value="32">32×</option></select></label><button id="toggleTracks" aria-pressed="true">Hide signals</button><button id="export">Save PNG</button><button id="copy">Copy link</button></div></div>
- <div class="loop-controls"><button id="publishedLoops" aria-pressed="false" title="Overlay the selected K562 reference loops">Published loops</button><label>Loop reference<select id="loopReference"><option value="published">Published K562</option><option value="reprocessed">Reprocessed K562</option></select></label><span id="loopStatus" role="status" aria-live="polite" hidden></span></div>
+ <div class="loop-controls"><button id="showLoops" aria-pressed="false" title="Show cLoops2 loops">Show loops</button><span id="loopStatus" role="status" aria-live="polite" hidden></span></div>
  <div id="trackControls" class="track-controls"><span>Signals and profiles</span></div>
  <div class="maps">
   <article><h3>Observed · raw</h3><p>ln(1 + PET counts)</p><canvas id="raw" width="800" height="800" aria-label="Original observed contacts"></canvas><div class="legend"><span>0</span><i></i><span id="rawLegend">2</span></div></article>
@@ -42,5 +42,5 @@
 </section>
 
 </main><footer>K562 HiTrAC · Genome-wide observations · Overfit results on fitting regions</footer>
-<script src="data/manifest.js"></script><script src="extension.js"></script><script src="genome.js?v=20260923signals"></script><script src="capacity-math.js?v=20260923signals"></script><script src="map-profiles.js?v=20260923signals"></script><script src="dnase-selection.js?v=20260930select"></script><script src="signal-tracks.js?v=20260930select"></script><script src="peak-axes.js?v=20260930peaks"></script><script src="map-colors.js?v=20260930white"></script><script src="published-loops.js?v=20260930white"></script><script src="viewer-v3.js?v=20260930white"></script>
+<script src="data/manifest.js"></script><script src="extension.js"></script><script src="genome.js?v=20260923signals"></script><script src="capacity-math.js?v=20260923signals"></script><script src="map-profiles.js?v=20260923signals"></script><script src="dnase-selection.js?v=20260930select"></script><script src="signal-tracks.js?v=20260930select"></script><script src="peak-axes.js?v=20260930peaks"></script><script src="map-colors.js?v=20260930loops"></script><script src="published-loops.js?v=20260930loops"></script><script src="viewer-v3.js?v=20260930loops"></script>
 </body></html>

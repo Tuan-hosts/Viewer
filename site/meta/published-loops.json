@@ -151,9 +151,10 @@
       }
     }
   },
-  "display": "Explore maps and Compare predictions; optional mirrored purple anchor outlines on every panel, including the overfit prediction. Coordinate-based visibility and unique loop counts. Published and newly reconstructed references are kept distinct.",
+  "display": "Show loops in Explore maps and Compare predictions, including the overfit panel. The only active source is cLoops2 on Meiyuan-style reconstructed K562 PETs. Published K562 is removed from the UI and cannot be selected through historical links.",
   "caveat": "Published K562 reference calls are not newly called loops from the current Meiyuan-processed K562.hic and are not an independent biological truth set.",
   "colors": "White (#FFFFFF) at the selected minimum to red (#FF0000) at the maximum, with a linear shared scale. Unsupported/NaN cells stay white. Supported -Infinity uses the selected lower bound. Existing stored maps, clipping and metrics are unchanged.",
   "source_assembly_evidence": "Hi-TrAC Nature Communications Methods: Human genome version hg38; inputs in other versions converted to hg38. Retained paper.xml.",
-  "reconstructed_reference": "See loops-reprocessed/manifest.json. Unavailable calls are explicitly pending; no published-data fallback."
+  "reconstructed_reference": "See loops-reprocessed/manifest.json. Pending calls are shown as preparing, with no published-data fallback.",
+  "published_loops_archive_only": true
 }

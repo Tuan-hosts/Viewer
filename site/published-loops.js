@@ -1,36 +1,35 @@
 (function(root) {
   'use strict';
-  const manifests=new Map();
+  let manifest=null;
   const cache=new Map();
-  async function load(record,signal,reference='published') {
-    if(!['published','reprocessed'].includes(reference))throw Error('Unknown loop reference');
-    const directory=reference==='published'?'loops':'loops-reprocessed';
-    let manifest=manifests.get(reference);
+  async function load(record,signal) {
+    // The sole displayed reference is called from reconstructed experimental PETs.
+    // Historical links cannot select the archived published packets.
+    const directory='loops-reprocessed';
     if(!manifest) {
-      const response=await fetch(`${directory}/manifest.json`,{signal});
+      const response=await fetch(`${directory}/manifest.json`,{signal,cache:'no-store'});
       if(!response.ok)throw Error('Loop reference unavailable');
       const m=await response.json();
       if(m.assembly!=='hg38'||m.cell!=='K562')throw Error('Loop reference mismatch');
-      if(m.ready===false)throw Error('Reprocessed PET loops are still being prepared');
+      if(m.ready!==true)throw Error('Loops are being prepared');
       manifest=m;
-      manifests.set(reference,m);
     }
     const entry=manifest.packets[record.chrom];
     if(!entry)return [];
-    const key=`${reference}:${record.chrom}`;
+    const key=record.chrom;
     if(cache.has(key))return cache.get(key);
     if(!entry.file.startsWith(`${directory}/`)||entry.file.includes('..'))throw Error('Invalid loop packet path');
     const response=await fetch(entry.file,{signal});
-    if(!response.ok)throw Error('Published loops unavailable');
+    if(!response.ok)throw Error('Loops unavailable');
     const bytes=await response.arrayBuffer();
     const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
-    if(bytes.byteLength!==entry.bytes||hash!==entry.sha256)throw Error('Published loop checksum failed');
+    if(bytes.byteLength!==entry.bytes||hash!==entry.sha256)throw Error('Loop checksum failed');
     const text=await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
     const loops=JSON.parse(text);
-    if(loops.length!==entry.loops)throw Error('Published loop count mismatch');
+    if(loops.length!==entry.loops)throw Error('Loop count mismatch');
     let previous=-1;
     for(const v of loops) {
-      if(!Array.isArray(v)||v.length!==4||!v.every(Number.isInteger)||v[0]<0||v[0]<previous||v[1]<v[0]||v[2]<v[0]||v[3]<v[2])throw Error('Invalid published loop anchors');
+      if(!Array.isArray(v)||v.length!==4||!v.every(Number.isInteger)||v[0]<0||v[0]<previous||v[1]<=v[0]||v[2]<v[0]||v[3]<=v[2])throw Error('Invalid loop anchors');
       previous=v[0];
     }
     cache.set(key,loops);

@@ -42,4 +42,36 @@ for(const [chrom,p] of Object.entries(manifest.packets)){
  }
 }
 eq(total,98850);eq(total,manifest.total_loops);
-console.log(`Passed ${checks} loop, coordinate, color and packaged-data checks.`);
+async function checkActiveSource(){
+ const originalFetch=global.fetch;
+ const modulePath=require.resolve('../site/published-loops.js');
+ const requests=[];
+ const data=[[1000,1100,6000,6100]],packet=zlib.gzipSync(JSON.stringify(data));
+ let ready=false,corrupt=false,packetPath='loops-reprocessed/chr3.json.gz';
+ const expectedHash=crypto.createHash('sha256').update(packet).digest('hex');
+ global.fetch=async (url,options)=>{
+  requests.push(String(url));
+  if(url==='loops-reprocessed/manifest.json')return new Response(JSON.stringify({
+   cell:'K562',assembly:'hg38',ready,
+   packets:{chr3:{file:packetPath,bytes:packet.length,sha256:expectedHash,loops:data.length}}
+  }));
+  assert.equal(url,'loops-reprocessed/chr3.json.gz','Must never download published loop packets');
+  return new Response(corrupt?Buffer.from('corrupted packet'):packet);
+ };
+ const fresh=()=>{delete require.cache[modulePath];return require(modulePath);};
+ try{
+  const active=fresh();
+  // Even a historical third argument cannot select the published source.
+  await assert.rejects(active.load({chrom:'chr3'},undefined,'published'),/being prepared/);checks++;
+  eq(requests,['loops-reprocessed/manifest.json']);
+  // A pending manifest is not cached forever: toggling after publication retries it.
+  ready=true;
+  eq(await active.load({chrom:'chr3'}),data);
+  const before=requests.length;eq(await active.load({chrom:'chr3'}),data);eq(requests.length,before);
+  corrupt=true;await assert.rejects(fresh().load({chrom:'chr3'}),/checksum/);checks++;
+  corrupt=false;packetPath='loops/chr3.json.gz';
+  await assert.rejects(fresh().load({chrom:'chr3'}),/packet path/);checks++;
+  assert(requests.every(p=>p.startsWith('loops-reprocessed/')));checks++;
+ }finally{global.fetch=originalFetch;delete require.cache[modulePath];}
+}
+checkActiveSource().then(()=>console.log(`Passed ${checks} loop, coordinate, color, source-selection and packaged-data checks.`)).catch(error=>{console.error(error);process.exitCode=1;});
