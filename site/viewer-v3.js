@@ -1,7 +1,7 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id), M=window.HITRAC_MANIFEST, E=window.HITRAC_EXTENSION, C=window.CapacityMath;
- const signalUI=SignalTracks.attach();
+ const signalUI=SignalTracks.attach({onSelect:selectDnaseInterval});
  const names={raw:'No normalization',observed:'Shared observed distance',shuffled:'Shuffled endpoints',plb:'Local PLB',window:'Within-window distance'};
  let trainingBounds=true;
  let mode="compare",catalog,source,record,arm,data=null,view={x:0,y:0,size:100},version=0,worker=null,serial=0,pending=new Map(),metricTimer,metricVersion=0,renderPending=false;
@@ -197,6 +197,7 @@
   metricTimer=setTimeout(()=>{if(job.version===version&&job.revision===metricVersion){metricQueued=job;drainMetrics();}},80);
  }
  function schedule(){if(renderPending)return;renderPending=true;requestAnimationFrame(()=>{renderPending=false;render();});}
+ function selectDnaseInterval(start,size){if(!data||!record)return;view.x=view.y=start;view.size=size;constrain();schedule();}
  function zoom(size,fx=.5,fy=.5){if(!record)return;const next=clip(size,Math.min(10,record.grid),record.grid);view.x+=fx*(view.size-next);view.y+=fy*(view.size-next);view.size=next;constrain();schedule();}
  for(const id of ['raw','target','baseline','prediction']){const canvas=$(id);let drag=null;const pos=e=>{const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*800/r.width,y:(e.clientY-r.top)*800/r.height};};
   canvas.onpointerdown=e=>{if(!data)return;drag={...pos(e),vx:view.x,vy:view.y,size:view.size};canvas.setPointerCapture(e.pointerId);};canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=()=>drag=null;

@@ -67,7 +67,7 @@
     }
     return out;
   }
-  function attach() {
+  function attach({onSelect}={}) {
     const $=id=>document.getElementById(id), panels=['raw','target','baseline','prediction'];
     const labels={raw:'Raw map profile',target:'Observed profile',baseline:'Baseline profile',prediction:'Predicted profile'};
     const colors={raw:'#7656a0',target:'#bd3349',baseline:'#c88825',prediction:'#357db6'};
@@ -82,6 +82,11 @@
       $(id).parentElement.append(box);
     }
     let state=null, show=true, profiles=null, profileWindow=null, lastKey='', cached=null;
+    if(onSelect)for(const id of panels)DnaseSelection.attach($(id+'-dnase'),{
+      plot:{left:73,right:777,top:6,bottom:110},
+      getRange:()=>state&&show?{id:state.record.id,start:state.view.x,size:state.view.size,total:state.record.grid,minimum:Math.min(10,state.record.grid)}:null,
+      onSelect
+    });
     const format=x=>Number.isFinite(x)?x.toLocaleString(undefined,{maximumSignificantDigits:4}):'Unavailable';
     function paintDNase(values,start,size,scale) {
       const canvas=$('raw-dnase'),ctx=canvas.getContext('2d'),max=values?maxValue(values,scale):0;

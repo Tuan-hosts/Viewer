@@ -5,7 +5,7 @@
   "prediction_settings": 72,
   "prediction_windows": 5376,
   "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
-  "total_bytes": 223755568,
+  "total_bytes": 223759761,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -543,6 +543,11 @@
       "sha256": "dec64b56abf5462de45bf7e848fa0c2054be1f27fae42e8aae7c1d8ed947eaa8"
     },
     {
+      "file": "site/dnase-selection.js",
+      "bytes": 3653,
+      "sha256": "728a23d8e0ba05a72993fbd426e1e68bad5051c9524719941222a691339857c7"
+    },
+    {
       "file": "site/extension.js",
       "bytes": 2906104,
       "sha256": "9abf61075041214b91d52c346116450b218ec8e6938d4fd8d6902d4c7363e651"
@@ -574,8 +579,8 @@
     },
     {
       "file": "site/index.html",
-      "bytes": 6452,
-      "sha256": "81d29dd82f852f0fe6a91f589e7d2d4818a69ec931a2498283992deb94e8ac41"
+      "bytes": 6511,
+      "sha256": "82b751d0fb4b06261a9a81d37d192a719593c94504e87af76f6964b40fe9ce9a"
     },
     {
       "file": "site/map-profiles.js",
@@ -624,8 +629,8 @@
     },
     {
       "file": "site/signal-tracks.js",
-      "bytes": 13265,
-      "sha256": "e72f00cb958aa8b16b23d7eb6faac299a63ebe5b4283f084494571e4ea1ba5b3"
+      "bytes": 13589,
+      "sha256": "1cb5b3cffcb35b9c40496e9b31b2dfc8fc456e7a88179cdcb7c179881e32e192"
     },
     {
       "file": "site/style.css",
@@ -894,8 +899,8 @@
     },
     {
       "file": "site/viewer-v3.js",
-      "bytes": 24774,
-      "sha256": "2bf880427b805d347c578f202ed86e65cacfe02874b97a89412def0a81b5f522"
+      "bytes": 24931,
+      "sha256": "cafe6f7d0c9f46604486db26c09211d6850ea4973aeebc6e6120bf858d8c6163"
     },
     {
       "file": "site/viewer-worker.js",
