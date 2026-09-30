@@ -4,6 +4,10 @@
 
 The website is public. No account is needed.
 
+In **Explore maps**, the **Published loops** button overlays the original K562 Hi-TrAC loop anchors from the paper's Supplementary Data 3. Purple outlines follow genomic coordinates through zoom and bin-width changes. The reference is loaded only when enabled, with checked chromosome downloads. Provenance and display details are in `site/meta/published-loops.json`.
+
+Signed maps use blue for negative values, white at zero, and red for positive values. Supported negative infinity in ln(O/E) renders at the selected lower bound; missing cells remain white. Colors and overlays do not change stored maps or comparison metrics.
+
 - **Explore maps:** browse 21,488 observed maps across nuclear chromosomes at 1, 2, 5 and 10 kb, with 1-, 2- and 4-Mb windows.
 - **Compare predictions:** view the saved training target, a target-matched distance + DNase baseline, and the neural overfit prediction alongside the raw observation. There are 72 settings and 5,376 fitting-window predictions on chr3 and chr4.
 

@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "cell": "K562",
+  "assembly": "hg38",
+  "source": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-022-34276-8/MediaObjects/41467_2022_34276_MOESM5_ESM.xlsx",
+  "source_sha256": "9455987c45f374b37c08df7772c3885a1c0dec586b81be5c010e25256de1e5f2",
+  "paper": "https://www.nature.com/articles/s41467-022-34276-8",
+  "sheet": "K562_all_Hi-TrAC_loops",
+  "total_loops": 98850,
+  "coordinates": "Original published anchor starts and ends, without liftOver or rebinning. Each row is [startA,endA,startB,endB].",
+  "filtering": "All 98,850 published significant K562 cis loops, including four table entries with midpoint separation below 5 kb. No new FDR or distance filter.",
+  "packets": {
+    "chr1": {
+      "file": "loops/chr1.json.gz",
+      "loops": 12917,
+      "bytes": 186639,
+      "sha256": "8c7c79767cad691303b06880053f89947c4eb9c767d7125fab0cb1df544668da"
+    },
+    "chr10": {
+      "file": "loops/chr10.json.gz",
+      "loops": 3558,
+      "bytes": 52779,
+      "sha256": "6a7bc5a8c20bca46c5d5af0eb5678b4df7510c37a8fa39af574fdf8ba8bddb50"
+    },
+    "chr11": {
+      "file": "loops/chr11.json.gz",
+      "loops": 5326,
+      "bytes": 76972,
+      "sha256": "6b3433aeca209ee1ca109adea7e40b3f3514d6fc4d7e572b54a81e3887fba6c3"
+    },
+    "chr12": {
+      "file": "loops/chr12.json.gz",
+      "loops": 4896,
+      "bytes": 71231,
+      "sha256": "17a792e1850c32ebcae62358e1555f801b93e187a2869a767aca600222238dbe"
+    },
+    "chr13": {
+      "file": "loops/chr13.json.gz",
+      "loops": 2318,
+      "bytes": 34382,
+      "sha256": "b97ce99b7ef89f8a168b076deb50b8dab498b7827804ab01ab2993c86754ab5c"
+    },
+    "chr14": {
+      "file": "loops/chr14.json.gz",
+      "loops": 2888,
+      "bytes": 42333,
+      "sha256": "858e7b8fa3d853b7b25a8064ff2319a0f7c43cc51acc0d5b87e26f3edbeb6699"
+    },
+    "chr15": {
+      "file": "loops/chr15.json.gz",
+      "loops": 2663,
+      "bytes": 39312,
+      "sha256": "8cfa896e73b977aff5b7bd378587dca475ca0e8446a10bfa828a0ec8abe4a93b"
+    },
+    "chr16": {
+      "file": "loops/chr16.json.gz",
+      "loops": 3668,
+      "bytes": 52464,
+      "sha256": "9cc78345bddea13c6fedc6e4efe60fe507c92393beb8b2a86c534bf4c8e3cd9f"
+    },
+    "chr17": {
+      "file": "loops/chr17.json.gz",
+      "loops": 5496,
+      "bytes": 78557,
+      "sha256": "532dd6ad9d5a6b862093e093049a8378d4fd4f1465932675909fa8543d6f167e"
+    },
+    "chr18": {
+      "file": "loops/chr18.json.gz",
+      "loops": 791,
+      "bytes": 12140,
+      "sha256": "89c856e878ae752fe06031634fbbc03a226771e7946353003afb2d5a9ccff726"
+    },
+    "chr19": {
+      "file": "loops/chr19.json.gz",
+      "loops": 6579,
+      "bytes": 89033,
+      "sha256": "093ac26e6cb2958621f14fbccc1b4e28496466dd8d738b5afd2258869baf028c"
+    },
+    "chr2": {
+      "file": "loops/chr2.json.gz",
+      "loops": 6746,
+      "bytes": 100984,
+      "sha256": "b079e485dd394acd22708b31b863d7b782dec68907cac870f0206d2e17cc7013"
+    },
+    "chr20": {
+      "file": "loops/chr20.json.gz",
+      "loops": 2837,
+      "bytes": 41318,
+      "sha256": "db83211124c4446637b6efa9780b6500fcbc21df4850a78a4721d6ef661d110e"
+    },
+    "chr21": {
+      "file": "loops/chr21.json.gz",
+      "loops": 1261,
+      "bytes": 18239,
+      "sha256": "717dbc96f3c912b19a7c7ab8a2362913d86ae228da7b829b786d18c4539030f7"
+    },
+    "chr22": {
+      "file": "loops/chr22.json.gz",
+      "loops": 3632,
+      "bytes": 49408,
+      "sha256": "c9626a58e6908af2719ca755675ddbe296642b5b45a377c67f277802cb3c30e6"
+    },
+    "chr3": {
+      "file": "loops/chr3.json.gz",
+      "loops": 6563,
+      "bytes": 96454,
+      "sha256": "f420e6ecf3172228d9b0d8217045836fb8b48d58aec85183e2001eb2769c1807"
+    },
+    "chr4": {
+      "file": "loops/chr4.json.gz",
+      "loops": 3029,
+      "bytes": 45551,
+      "sha256": "960bc74f255e68814631b4b2cfeae1584837852b605bf07b5a153a1181b27bf6"
+    },
+    "chr5": {
+      "file": "loops/chr5.json.gz",
+      "loops": 4369,
+      "bytes": 65223,
+      "sha256": "cffd8e732ebcffe12cd6882572e8b150812af47b991fe2cb2d243311ff971dc5"
+    },
+    "chr6": {
+      "file": "loops/chr6.json.gz",
+      "loops": 6809,
+      "bytes": 99698,
+      "sha256": "7a159a62f24d71d0c4b45c559b4a9ef7220003e2f4670dce3a5ccc8db8b42b06"
+    },
+    "chr7": {
+      "file": "loops/chr7.json.gz",
+      "loops": 4513,
+      "bytes": 66865,
+      "sha256": "f077fdc439f6904b6ce5abb9ad9c9aa4570da72790022c5b759f62c536de2d00"
+    },
+    "chr8": {
+      "file": "loops/chr8.json.gz",
+      "loops": 3013,
+      "bytes": 45026,
+      "sha256": "9063581953dfec200a21796c39a9a91ba56792eb092b6fcd3e46346404f96980"
+    },
+    "chr9": {
+      "file": "loops/chr9.json.gz",
+      "loops": 3731,
+      "bytes": 54860,
+      "sha256": "86228d3326b78deba6f597f19b6594e0299e4c61cfc4eb092f14402c81dc93c7"
+    },
+    "chrX": {
+      "file": "loops/chrX.json.gz",
+      "loops": 1247,
+      "bytes": 19442,
+      "sha256": "cc96930818310bdfd03839f7865144cc44ad4e0d673236e436ced312d28ca7ef"
+    }
+  }
+}

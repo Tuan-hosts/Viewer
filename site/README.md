@@ -6,6 +6,10 @@ The Viewer shows genome-wide K562 HiTrAC observations and the completed capacity
 
 **Explore maps** shows observations across all chromosomes, with the original distance + DNase log-count baseline. **Compare predictions** restricts the browser to the fitting regions and offers the six trained targets. It adds the fourth map and a baseline fitted to the same target.
 
+Explore maps also offers **Published loops**: optional purple outlines from the original K562 Hi-TrAC Supplementary Data 3, in hg38 coordinates. The same anchors appear on all three maps and follow zooming and bin-width changes. The 98,850 published calls are preserved without new filtering; these are historical reference calls, not calls inferred from the current matrix. Small anchors have a minimum visible marker size. Source, checksums and display conventions are in [published-loops.json](meta/published-loops.json).
+
+Signed maps use blue below zero, white at zero and red above zero. Each side scales to its selected limit, and the legend marks zero even for asymmetric limits. Supported negative infinity in ln(O/E) uses the lower color bound, while unsupported or NaN cells stay white. These rendering choices do not alter the underlying targets, predictions or metrics.
+
 ## Four maps
 
 1. **Observed · raw:** the original `ln(1 + PET counts)` reference.
