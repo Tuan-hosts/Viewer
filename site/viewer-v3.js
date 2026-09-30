@@ -61,13 +61,14 @@
  function call(type,payload){return new Promise((resolve,reject)=>{if(!worker){reject(Error('Map worker is unavailable. Use Retry.'));return;}const id=++serial;pending.set(id,{resolve,reject,type});worker.postMessage({id,type,data:payload});});}
  async function prepareWindow(selected,groups,signal){
   if(preparedWindow?.id===selected.id)return preparedWindow;
-  const [chromosome,dnase]=await Promise.all([
+  const [chromosome,dnase,peaks]=await Promise.all([
     HiTracGenome.loadPacket(M.packets[selected.packet],{signal}),
-    SignalTracks.loadDnase(selected,signal)
+    SignalTracks.loadDnase(selected,signal),
+    PeakAxes.load(selected,signal).catch(error=>{if(error.name==='AbortError')throw error;console.warn(error.message);return null;})
   ]);
   if(signal.aborted)throw new DOMException('Selection changed','AbortError');
   const genome=HiTracGenome.windowData(chromosome,selected,groups),raw=upperRaw(genome.map);
-  preparedWindow={id:selected.id,genome,raw,signals:{dnase,endpoints:SignalTracks.endpoints(genome.map)}};
+  preparedWindow={id:selected.id,genome,raw,signals:{dnase,peaks,endpoints:SignalTracks.endpoints(genome.map)}};
   diagnostic('chromosomeCacheBytes',HiTracGenome.cacheStats().bytes);
   return preparedWindow;
  }
@@ -157,6 +158,8 @@
   }
   ctx.putImageData(pixels,plot.x,plot.y);ctx.strokeStyle='#d5dde2';ctx.strokeRect(plot.x-.5,plot.y-.5,plot.size+1,plot.size+1);ctx.fillStyle='#596b76';ctx.font='18px system-ui';
   for(const f of [0,.5,1]){ctx.textAlign='center';ctx.fillText(mb(record.start+(view.x+f*view.size)*record.bin_bp),plot.x+f*plot.size,plot.y+plot.size+30);ctx.textAlign='right';ctx.fillText(mb(record.start+(view.y+f*view.size)*record.bin_bp),plot.x-10,plot.y+f*plot.size+6);}ctx.textAlign='center';ctx.fillText('Genomic position (Mb)',plot.x+plot.size/2,790);
+  PeakAxes.draw(ctx,data?.signals.peaks,record,view,plot);
+  canvas.title='Teal axis rectangles: provisional DNase peaks from K562.bw (fixed training p95, 100-bp intervals).';
  }
  function drawAll(){const [lo,hi]=bounds();draw('raw',data?.raw,data?.rawSupport,0,+ $('rawMax').value);for(const id of (mode==='compare'?['target','baseline','prediction']:['target','baseline']))draw(id,data?.[id],data?.valid,lo,hi);signalUI.update(data?.signals,record,view,{lo,hi,rawMax:+$('rawMax').value});}
  function showMetrics(result,job){

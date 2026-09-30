@@ -5,7 +5,7 @@
   "prediction_settings": 72,
   "prediction_windows": 5376,
   "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
-  "total_bytes": 221164274,
+  "total_bytes": 223755568,
   "files": [
     {
       "file": "site/.nojekyll",
@@ -574,8 +574,8 @@
     },
     {
       "file": "site/index.html",
-      "bytes": 6402,
-      "sha256": "76fa885bdcd3bb412be8e2c65d906ab1768ce77f6cbfc423e7c1ed05c8679e5b"
+      "bytes": 6452,
+      "sha256": "81d29dd82f852f0fe6a91f589e7d2d4818a69ec931a2498283992deb94e8ac41"
     },
     {
       "file": "site/map-profiles.js",
@@ -586,6 +586,11 @@
       "file": "site/meta/cloops_1d_audit.json",
       "bytes": 766,
       "sha256": "53ff74de9d47c258cb57421d054c8d032c69edb99e6ce34e79ea038eed075b6a"
+    },
+    {
+      "file": "site/meta/peak-axes.json",
+      "bytes": 549,
+      "sha256": "50821ca4cec02dc51b41927f4fe4083ee44a709cdacc48523692be52883170bb"
     },
     {
       "file": "site/meta/profile_validation.json",
@@ -606,6 +611,11 @@
       "file": "site/normalization.js",
       "bytes": 7292,
       "sha256": "e28236e39056e6cc887ccea61ff9202a67a2519e82d360fd282373a29ce1e1c2"
+    },
+    {
+      "file": "site/peak-axes.js",
+      "bytes": 3888,
+      "sha256": "cd02ced74f0b5eeaacf1ca45f4242473aed08ab0b2189b8798232c0e29296d59"
     },
     {
       "file": "site/README.md",
@@ -748,6 +758,131 @@
       "sha256": "26515679b6f0e3c6264cdfac349ef11dd6acbcca9c990a7472dd11272140d8e0"
     },
     {
+      "file": "site/tracks/peaks/chr1.json.gz",
+      "bytes": 380396,
+      "sha256": "df94810ebba11f7b16af0d98791c1fb61ef4d2a772831e4a16a024e6b23c06aa"
+    },
+    {
+      "file": "site/tracks/peaks/chr10.json.gz",
+      "bytes": 115707,
+      "sha256": "21d56d002f4794d3233832a780ccbdb0f5aa7209cd96d4277d9762b89d90622a"
+    },
+    {
+      "file": "site/tracks/peaks/chr11.json.gz",
+      "bytes": 132721,
+      "sha256": "21ef6bf15285c1c65ae0fcb64be95de9142c16a1b96f061f48c173bfc891c4e1"
+    },
+    {
+      "file": "site/tracks/peaks/chr12.json.gz",
+      "bytes": 104216,
+      "sha256": "8073c4f0b479c1022752995009b873d9ab830a20e3de21095c8fce70200962a6"
+    },
+    {
+      "file": "site/tracks/peaks/chr13.json.gz",
+      "bytes": 40781,
+      "sha256": "0beb7aedf76d18844dc3be42ecaf00228edad4d7fbcc2cddbf3b28df59cb8b6c"
+    },
+    {
+      "file": "site/tracks/peaks/chr14.json.gz",
+      "bytes": 38800,
+      "sha256": "4006ad847c6396e5b94e2aca9bd42b51ca327bd2dbe770e0b4bc0e6b4efc80fc"
+    },
+    {
+      "file": "site/tracks/peaks/chr15.json.gz",
+      "bytes": 79199,
+      "sha256": "238ec055effea26b8fa84f7acfdedd64b50c92a31832d5b5d18ff58ccbd25e72"
+    },
+    {
+      "file": "site/tracks/peaks/chr16.json.gz",
+      "bytes": 110426,
+      "sha256": "633bd958c7a27686aba18cdde3718c0aad4083201a2fcaa684720b9918dcf64a"
+    },
+    {
+      "file": "site/tracks/peaks/chr17.json.gz",
+      "bytes": 124174,
+      "sha256": "dad1b71dcc1d4424b7d2440f89587f19675ada2ad67a3b5163324d35a78c1eaf"
+    },
+    {
+      "file": "site/tracks/peaks/chr18.json.gz",
+      "bytes": 45017,
+      "sha256": "2fa224e744bf78af8b8bf6e45f65f3d79aab3da3e409a599a644ae4ae4b60cea"
+    },
+    {
+      "file": "site/tracks/peaks/chr19.json.gz",
+      "bytes": 112117,
+      "sha256": "28e6ac96095196ba0ffdadcbe45faa89f3a06a6620f4f8c1c0a731677647b0df"
+    },
+    {
+      "file": "site/tracks/peaks/chr2.json.gz",
+      "bytes": 162561,
+      "sha256": "64bff0106d16247fed45668b47d46c4dfe9c72d376a8d096bb314e35eddcf9da"
+    },
+    {
+      "file": "site/tracks/peaks/chr20.json.gz",
+      "bytes": 71821,
+      "sha256": "a050649cb0f961fddacc7e140c4a0b78628ac415d51a701f3e8c0d5ffc1909f1"
+    },
+    {
+      "file": "site/tracks/peaks/chr21.json.gz",
+      "bytes": 51666,
+      "sha256": "c63cbeae1af306b9742c6823471dedb53232d3fd590ca6e1a87dc5d198577e97"
+    },
+    {
+      "file": "site/tracks/peaks/chr22.json.gz",
+      "bytes": 51876,
+      "sha256": "307fd29e8f1e1c7d44b317f66e60f99ed94fc98446872f0a23dbcac80cb283bb"
+    },
+    {
+      "file": "site/tracks/peaks/chr3.json.gz",
+      "bytes": 141414,
+      "sha256": "0301a65410ca839aab549d4db82dd4a8e0987406734c0bd9b1a78968a49b330f"
+    },
+    {
+      "file": "site/tracks/peaks/chr4.json.gz",
+      "bytes": 73360,
+      "sha256": "5cba0d0c01b37e8c416bc34c4cfdd32c3c1c689737afced4b09d7f2db36600e5"
+    },
+    {
+      "file": "site/tracks/peaks/chr5.json.gz",
+      "bytes": 119273,
+      "sha256": "5f98738adcb8d55800b1c057e8a2ffd7538bd802a4c8bc77a6c84e9fa2a3a9d1"
+    },
+    {
+      "file": "site/tracks/peaks/chr6.json.gz",
+      "bytes": 194593,
+      "sha256": "31e0c00fc0abe1a620f69cc15d50839345c1c06922da907fc1d61ceda0747599"
+    },
+    {
+      "file": "site/tracks/peaks/chr7.json.gz",
+      "bytes": 209794,
+      "sha256": "b1ab001938f284a478cfb99ecf400ffee89b891abf137acca30afe0d70e8ebc1"
+    },
+    {
+      "file": "site/tracks/peaks/chr8.json.gz",
+      "bytes": 90024,
+      "sha256": "67b43ef8e7728c066e1a532f711255241382b6e1b84ff0df47a193eb87056d81"
+    },
+    {
+      "file": "site/tracks/peaks/chr9.json.gz",
+      "bytes": 95299,
+      "sha256": "5d566d2de71a15bb36247c7bd58472c19a79e021112dfaed6cbeca2095070c2b"
+    },
+    {
+      "file": "site/tracks/peaks/chrX.json.gz",
+      "bytes": 34173,
+      "sha256": "3568678f1a5c1efd156f7ccb6e09a3be1fb237cf23c16d56412f8231c23d9d59"
+    },
+    {
+      "file": "site/tracks/peaks/chrY.json.gz",
+      "bytes": 536,
+      "sha256": "b03566aa9398a6fe52d414a1d3f48e4c67a9a4f27fe5225769ff7da3e3a2c011"
+    },
+    {
+      "file": "site/tracks/peaks/manifest.json",
+      "bytes": 6541,
+      "sha256": "326ec978248c91eec073ab6c80a19ffb1c0c3eaadc20379e2ff770d05a85ddf6"
+    },
+    {
       "file": "site/VALIDATION_REPORT.md",
       "bytes": 4422,
       "sha256": "dedb21fde6c39e21dc20df2711a68321c0181261d955156f4f9b72673dfea91e"
@@ -759,8 +894,8 @@
     },
     {
       "file": "site/viewer-v3.js",
-      "bytes": 24452,
-      "sha256": "b7bcb0348b1cff2dc855bad59ec2e9933a343df3639c7f35b37f6b0f14b09f55"
+      "bytes": 24774,
+      "sha256": "2bf880427b805d347c578f202ed86e65cacfe02874b97a89412def0a81b5f522"
     },
     {
       "file": "site/viewer-worker.js",

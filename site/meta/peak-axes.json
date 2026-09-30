@@ -1,0 +1,8 @@
+{
+  "source": "tracks/peaks/manifest.json",
+  "display": "Teal rectangles outside the top and left heatmap edges, at exact genomic intervals. Independent horizontal and vertical view coordinates.",
+  "unchanged": "No map values, masks, clipping, metrics, model predictions, signals, profiles, controls or layout were changed.",
+  "atlas_match_windows": 388,
+  "calibrated_peak_fdr": false,
+  "overview_rasterization": "Intervals narrower than a screen pixel are drawn to the enclosing display pixel(s), without changing their stored coordinates."
+}

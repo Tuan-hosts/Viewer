@@ -30,6 +30,8 @@ jobs:
         run: python scripts/verify_package.py
       - name: Verify native metrics and prediction decoding
         run: node scripts/test_viewer.cjs
+      - name: Verify DNase peak-axis coordinates
+        run: node scripts/test_peak_axes.cjs
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site

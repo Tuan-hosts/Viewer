@@ -1,0 +1,204 @@
+{
+  "version": 1,
+  "source": "K562.bw",
+  "source_sha256": "7ba6ba20ed8c25acc282d03253360ac8edcdce6b9ab1a90832a980cfeaad12c6",
+  "bin_bp": 100,
+  "threshold": 0.06551580131053925,
+  "quantile": 95,
+  "threshold_fit": "Positive finite exact 100-bp means from 128 training windows outside chr3/chr4",
+  "definition": "Contiguous complete 100-bp bins strictly above the frozen p95 DNase threshold; no smoothing or padding. Provisional signal intervals, not FDR-calibrated peaks.",
+  "packets": {
+    "chr1": {
+      "file": "tracks/peaks/chr1.json.gz",
+      "intervals": 70337,
+      "length": 248956422,
+      "covered_bp": 17523000,
+      "bytes": 380396,
+      "sha256": "df94810ebba11f7b16af0d98791c1fb61ef4d2a772831e4a16a024e6b23c06aa"
+    },
+    "chr2": {
+      "file": "tracks/peaks/chr2.json.gz",
+      "intervals": 29386,
+      "length": 242193529,
+      "covered_bp": 6588500,
+      "bytes": 162561,
+      "sha256": "64bff0106d16247fed45668b47d46c4dfe9c72d376a8d096bb314e35eddcf9da"
+    },
+    "chr3": {
+      "file": "tracks/peaks/chr3.json.gz",
+      "intervals": 25809,
+      "length": 198295559,
+      "covered_bp": 6093000,
+      "bytes": 141414,
+      "sha256": "0301a65410ca839aab549d4db82dd4a8e0987406734c0bd9b1a78968a49b330f"
+    },
+    "chr4": {
+      "file": "tracks/peaks/chr4.json.gz",
+      "intervals": 13296,
+      "length": 190214555,
+      "covered_bp": 3026300,
+      "bytes": 73360,
+      "sha256": "5cba0d0c01b37e8c416bc34c4cfdd32c3c1c689737afced4b09d7f2db36600e5"
+    },
+    "chr5": {
+      "file": "tracks/peaks/chr5.json.gz",
+      "intervals": 21640,
+      "length": 181538259,
+      "covered_bp": 4969900,
+      "bytes": 119273,
+      "sha256": "5f98738adcb8d55800b1c057e8a2ffd7538bd802a4c8bc77a6c84e9fa2a3a9d1"
+    },
+    "chr6": {
+      "file": "tracks/peaks/chr6.json.gz",
+      "intervals": 35795,
+      "length": 170805979,
+      "covered_bp": 8458800,
+      "bytes": 194593,
+      "sha256": "31e0c00fc0abe1a620f69cc15d50839345c1c06922da907fc1d61ceda0747599"
+    },
+    "chr7": {
+      "file": "tracks/peaks/chr7.json.gz",
+      "intervals": 38448,
+      "length": 159345973,
+      "covered_bp": 9166700,
+      "bytes": 209794,
+      "sha256": "b1ab001938f284a478cfb99ecf400ffee89b891abf137acca30afe0d70e8ebc1"
+    },
+    "chr8": {
+      "file": "tracks/peaks/chr8.json.gz",
+      "intervals": 16225,
+      "length": 145138636,
+      "covered_bp": 3728900,
+      "bytes": 90024,
+      "sha256": "67b43ef8e7728c066e1a532f711255241382b6e1b84ff0df47a193eb87056d81"
+    },
+    "chr9": {
+      "file": "tracks/peaks/chr9.json.gz",
+      "intervals": 17343,
+      "length": 138394717,
+      "covered_bp": 4705700,
+      "bytes": 95299,
+      "sha256": "5d566d2de71a15bb36247c7bd58472c19a79e021112dfaed6cbeca2095070c2b"
+    },
+    "chr10": {
+      "file": "tracks/peaks/chr10.json.gz",
+      "intervals": 21148,
+      "length": 133797422,
+      "covered_bp": 4996300,
+      "bytes": 115707,
+      "sha256": "21d56d002f4794d3233832a780ccbdb0f5aa7209cd96d4277d9762b89d90622a"
+    },
+    "chr11": {
+      "file": "tracks/peaks/chr11.json.gz",
+      "intervals": 24393,
+      "length": 135086622,
+      "covered_bp": 6001200,
+      "bytes": 132721,
+      "sha256": "21ef6bf15285c1c65ae0fcb64be95de9142c16a1b96f061f48c173bfc891c4e1"
+    },
+    "chr12": {
+      "file": "tracks/peaks/chr12.json.gz",
+      "intervals": 18824,
+      "length": 133275309,
+      "covered_bp": 4607600,
+      "bytes": 104216,
+      "sha256": "8073c4f0b479c1022752995009b873d9ab830a20e3de21095c8fce70200962a6"
+    },
+    "chr13": {
+      "file": "tracks/peaks/chr13.json.gz",
+      "intervals": 7446,
+      "length": 114364328,
+      "covered_bp": 1807200,
+      "bytes": 40781,
+      "sha256": "0beb7aedf76d18844dc3be42ecaf00228edad4d7fbcc2cddbf3b28df59cb8b6c"
+    },
+    "chr14": {
+      "file": "tracks/peaks/chr14.json.gz",
+      "intervals": 6929,
+      "length": 107043718,
+      "covered_bp": 1792500,
+      "bytes": 38800,
+      "sha256": "4006ad847c6396e5b94e2aca9bd42b51ca327bd2dbe770e0b4bc0e6b4efc80fc"
+    },
+    "chr15": {
+      "file": "tracks/peaks/chr15.json.gz",
+      "intervals": 14508,
+      "length": 101991189,
+      "covered_bp": 3383300,
+      "bytes": 79199,
+      "sha256": "238ec055effea26b8fa84f7acfdedd64b50c92a31832d5b5d18ff58ccbd25e72"
+    },
+    "chr16": {
+      "file": "tracks/peaks/chr16.json.gz",
+      "intervals": 20345,
+      "length": 90338345,
+      "covered_bp": 5206800,
+      "bytes": 110426,
+      "sha256": "633bd958c7a27686aba18cdde3718c0aad4083201a2fcaa684720b9918dcf64a"
+    },
+    "chr17": {
+      "file": "tracks/peaks/chr17.json.gz",
+      "intervals": 22993,
+      "length": 83257441,
+      "covered_bp": 6003300,
+      "bytes": 124174,
+      "sha256": "dad1b71dcc1d4424b7d2440f89587f19675ada2ad67a3b5163324d35a78c1eaf"
+    },
+    "chr18": {
+      "file": "tracks/peaks/chr18.json.gz",
+      "intervals": 8169,
+      "length": 80373285,
+      "covered_bp": 1665700,
+      "bytes": 45017,
+      "sha256": "2fa224e744bf78af8b8bf6e45f65f3d79aab3da3e409a599a644ae4ae4b60cea"
+    },
+    "chr19": {
+      "file": "tracks/peaks/chr19.json.gz",
+      "intervals": 20683,
+      "length": 58617616,
+      "covered_bp": 6070500,
+      "bytes": 112117,
+      "sha256": "28e6ac96095196ba0ffdadcbe45faa89f3a06a6620f4f8c1c0a731677647b0df"
+    },
+    "chr20": {
+      "file": "tracks/peaks/chr20.json.gz",
+      "intervals": 13138,
+      "length": 64444167,
+      "covered_bp": 3137200,
+      "bytes": 71821,
+      "sha256": "a050649cb0f961fddacc7e140c4a0b78628ac415d51a701f3e8c0d5ffc1909f1"
+    },
+    "chr21": {
+      "file": "tracks/peaks/chr21.json.gz",
+      "intervals": 9654,
+      "length": 46709983,
+      "covered_bp": 2254300,
+      "bytes": 51666,
+      "sha256": "c63cbeae1af306b9742c6823471dedb53232d3fd590ca6e1a87dc5d198577e97"
+    },
+    "chr22": {
+      "file": "tracks/peaks/chr22.json.gz",
+      "intervals": 9519,
+      "length": 50818468,
+      "covered_bp": 4111300,
+      "bytes": 51876,
+      "sha256": "307fd29e8f1e1c7d44b317f66e60f99ed94fc98446872f0a23dbcac80cb283bb"
+    },
+    "chrX": {
+      "file": "tracks/peaks/chrX.json.gz",
+      "intervals": 6000,
+      "length": 156040895,
+      "covered_bp": 1560500,
+      "bytes": 34173,
+      "sha256": "3568678f1a5c1efd156f7ccb6e09a3be1fb237cf23c16d56412f8231c23d9d59"
+    },
+    "chrY": {
+      "file": "tracks/peaks/chrY.json.gz",
+      "intervals": 103,
+      "length": 57227415,
+      "covered_bp": 13500,
+      "bytes": 536,
+      "sha256": "b03566aa9398a6fe52d414a1d3f48e4c67a9a4f27fe5225769ff7da3e3a2c011"
+    }
+  }
+}
