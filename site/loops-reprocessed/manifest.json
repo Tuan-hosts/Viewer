@@ -2,11 +2,155 @@
   "version": 1,
   "cell": "K562",
   "assembly": "hg38",
-  "ready": false,
-  "packets": {},
+  "ready": true,
+  "packets": {
+    "chr3": {
+      "file": "loops-reprocessed/chr3.json.gz",
+      "loops": 4187,
+      "bytes": 61492,
+      "sha256": "3cee93a0f609287a603ddf1d936566bd86188002070623dcfd64e2acceed08f2"
+    },
+    "chr4": {
+      "file": "loops-reprocessed/chr4.json.gz",
+      "loops": 1907,
+      "bytes": 28933,
+      "sha256": "7de7f83f0d87ced3fef0690bed878fb0f298663781d04dac1228b4e6f8f22fd9"
+    },
+    "chr1": {
+      "file": "loops-reprocessed/chr1.json.gz",
+      "loops": 8614,
+      "bytes": 124199,
+      "sha256": "b402bf923934cddd264dc48aa50d812495223ae62772b3c215e91d3a812ce8eb"
+    },
+    "chr10": {
+      "file": "loops-reprocessed/chr10.json.gz",
+      "loops": 2202,
+      "bytes": 32852,
+      "sha256": "c8d1e997d2e216b5ac0f1960c4ea477367ba922be022145bdbea74d1d4aacb7e"
+    },
+    "chr11": {
+      "file": "loops-reprocessed/chr11.json.gz",
+      "loops": 3417,
+      "bytes": 49200,
+      "sha256": "6542d131fb55002c4239057968444263af873985fd410da42d31e70efed91c04"
+    },
+    "chr12": {
+      "file": "loops-reprocessed/chr12.json.gz",
+      "loops": 3245,
+      "bytes": 46978,
+      "sha256": "1394f66934da64be6fab7e8e8b02895262ebfa90182689624119f2adc18843b6"
+    },
+    "chr13": {
+      "file": "loops-reprocessed/chr13.json.gz",
+      "loops": 1450,
+      "bytes": 21359,
+      "sha256": "23461a5a2b2f2b4f1fa63e00fab2d33ecf33b48a8ccf51e71f0402b52c33a52d"
+    },
+    "chr14": {
+      "file": "loops-reprocessed/chr14.json.gz",
+      "loops": 1933,
+      "bytes": 28078,
+      "sha256": "5a4c454c6498dd646bf19878f40b2814645f74b1e3b99e3db6ee3fcbd8db7cb1"
+    },
+    "chr15": {
+      "file": "loops-reprocessed/chr15.json.gz",
+      "loops": 1677,
+      "bytes": 24829,
+      "sha256": "8b4a329d929470f31daf9f86afc11094f5265d150919d9bc9ed19e919588cf58"
+    },
+    "chr16": {
+      "file": "loops-reprocessed/chr16.json.gz",
+      "loops": 2456,
+      "bytes": 35307,
+      "sha256": "a7002bc459961fc478ad93a45267b5fe9e82f7a7160f1923a1fdaf50e6f32e05"
+    },
+    "chr17": {
+      "file": "loops-reprocessed/chr17.json.gz",
+      "loops": 3730,
+      "bytes": 53218,
+      "sha256": "b7828efa6ad81f72756fa37ba65cdc2ed12570135de452aee174055d9ddbc695"
+    },
+    "chr18": {
+      "file": "loops-reprocessed/chr18.json.gz",
+      "loops": 525,
+      "bytes": 7970,
+      "sha256": "5b289142c0315b1b107478cd892e240a0e78e552ebc16f30b415dad8f021b1cd"
+    },
+    "chr19": {
+      "file": "loops-reprocessed/chr19.json.gz",
+      "loops": 4511,
+      "bytes": 60235,
+      "sha256": "701a3be35ed665b36121880e9df944a57d3286cc566fa77f6d33d28f84372fb9"
+    },
+    "chr2": {
+      "file": "loops-reprocessed/chr2.json.gz",
+      "loops": 4346,
+      "bytes": 64976,
+      "sha256": "94a1de2abd9a2f2d757e614e6d9e96a82260f540e2d2d25952ad1aa23b35a62b"
+    },
+    "chr20": {
+      "file": "loops-reprocessed/chr20.json.gz",
+      "loops": 1762,
+      "bytes": 25689,
+      "sha256": "c599e966d7662113bb9dd0719017154607a974b311342da020cbabfb3dd22b75"
+    },
+    "chr21": {
+      "file": "loops-reprocessed/chr21.json.gz",
+      "loops": 819,
+      "bytes": 11876,
+      "sha256": "bac42689403f7d1bda864c3ec305bc1486a65217bae11e2d1b65a89efca9aa4b"
+    },
+    "chr22": {
+      "file": "loops-reprocessed/chr22.json.gz",
+      "loops": 2526,
+      "bytes": 34045,
+      "sha256": "302116995088bb2d55820203ba81e8f0e89a9759d1d1481bef749a1c9750d992"
+    },
+    "chr5": {
+      "file": "loops-reprocessed/chr5.json.gz",
+      "loops": 2806,
+      "bytes": 41767,
+      "sha256": "50d0927db53459cfca450586573e5ce2ec4985ab0c017f9e84be41e6e11d4f93"
+    },
+    "chr6": {
+      "file": "loops-reprocessed/chr6.json.gz",
+      "loops": 5033,
+      "bytes": 72786,
+      "sha256": "d1efa9c4d9dd746418b2273ddebf9bee6c393a9008cdde7233781e398b640dba"
+    },
+    "chr7": {
+      "file": "loops-reprocessed/chr7.json.gz",
+      "loops": 2752,
+      "bytes": 40781,
+      "sha256": "946d283420d31dad68e8e1f67c2c12f222367cb2e60516b5570ced8bf332389a"
+    },
+    "chr8": {
+      "file": "loops-reprocessed/chr8.json.gz",
+      "loops": 2097,
+      "bytes": 31429,
+      "sha256": "7413e5fb7e54b70e9d108fb9a8331b6696389bbf323aac8892a03af5d321675d"
+    },
+    "chr9": {
+      "file": "loops-reprocessed/chr9.json.gz",
+      "loops": 2295,
+      "bytes": 33674,
+      "sha256": "7c8a1252a95fcdf92f0fda692454cedbfd3e35457b60c10d5b87c6676fabd969"
+    },
+    "chrX": {
+      "file": "loops-reprocessed/chrX.json.gz",
+      "loops": 726,
+      "bytes": 11392,
+      "sha256": "9af2a25f6dda1ec91a729144d23a7536a1045fce9f67b702a67105a450355785"
+    }
+  },
   "reference": "cLoops2 on Meiyuan-style reconstructed K562 PETs",
   "source": "Six public untreated K562 libraries from PRJNA746963: SRR15150405, SRR15150406, SRR15150407, SRR15150414, SRR15150415, SRR15150416.",
   "processing": "fastp 0.24.0 linker trimming; bwa mem 0.7.17 -5SP against GENCODE48 GRCh38; per-run Picard 3.3.0 duplicate removal; samtools 1.21 MAPQ>=30 and -F2316; pairtools 1.1.0 UU selection; pool retained pairs. No additional coordinate deduplication or singleton filter for loop calling.",
   "calling": "Original cLoops2 core, eps 200/500/1000/2000 bp, minPts 10, PET separation >=5 kb; full chromosomes and their original backgrounds. Standard significant calls, local permutation FDR<0.01, loop midpoint separation >=5 kb. No 20-kb postfilter.",
-  "caveat": "Preparation pending. These will be newly called experimental reference loops, not loops called from the neural prediction, and not the published Supplementary Data 3 calls. Public SRA read names lack optical-duplicate coordinates; exact equivalence to Meiyuan's original K562.hic is not established."
+  "caveat": "Preparation pending. These will be newly called experimental reference loops, not loops called from the neural prediction, and not the published Supplementary Data 3 calls. Public SRA read names lack optical-duplicate coordinates; exact equivalence to Meiyuan's original K562.hic is not established.",
+  "total_loops": 65016,
+  "source_pair_sha256": "b948fd5baf526cd2944f09dc13dfdc7cf39b315761c81d2cd4e89d4fbfa9de7d",
+  "reconstruction_binding": "bb57d58fff703de3433b423a2cdc9eca959593082576701cc71c33fba2f163ed",
+  "caller_source_lock_sha256": "49c7ea3c271f0e182e68ddc4107ddcfd5af8d542fea8a84104bd55b0de54050c",
+  "finished": 1790901107.4788427
 }
