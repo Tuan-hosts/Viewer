@@ -178,7 +178,7 @@
       $('trackControls').hidden=!show;$('trackReadout').hidden=!show;
       $('toggleTracks').textContent=show?'Hide signals':'Show signals';$('toggleTracks').setAttribute('aria-pressed',String(show));
       if(!show)return;
-      const scale='log',axis='x';
+      const scale=state?.bounds.published?'linear':'log',axis='x';
       const start=state?.view[axis]||0, size=state?.view.size||0;
       const key=[state?.record.id,start,size,scale,axis,state?.bounds.lo,state?.bounds.hi,state?.bounds.rawMax].join(':');
       if(key===lastKey&&cached===state?.signals)return;

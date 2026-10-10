@@ -5,12 +5,32 @@
   "prediction_settings": 72,
   "prediction_windows": 5376,
   "prediction_data_commit": "a0eac91780cb48a345ed7f6b90d9fdcf7210e66d",
-  "total_bytes": 226167192,
+  "total_bytes": 226379467,
   "files": [
     {
       "file": "site/.nojekyll",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "site/GENOME_INTERACTION_QA.json",
+      "bytes": 848,
+      "sha256": "2b819603110894babf81f826e3b26bf1cccb26e2615affc9fb3d7485533887ee"
+    },
+    {
+      "file": "site/GENOME_NUMERICAL_QA.json",
+      "bytes": 43310,
+      "sha256": "6cb31e018475ba9e9c525ce4cb6c4a526f0b6985098e3f913c59bc11cd5e67bc"
+    },
+    {
+      "file": "site/README.md",
+      "bytes": 12453,
+      "sha256": "97517482a68ed75b2d9c82e77b66d64e327648a4844908fc9a05f2a131d585ec"
+    },
+    {
+      "file": "site/VALIDATION_REPORT.md",
+      "bytes": 4422,
+      "sha256": "dedb21fde6c39e21dc20df2711a68321c0181261d955156f4f9b72673dfea91e"
     },
     {
       "file": "site/app-v2.js",
@@ -554,18 +574,8 @@
     },
     {
       "file": "site/genome.js",
-      "bytes": 7170,
-      "sha256": "6b4fc488cfd8bd917397dbba1430c3d409e5cb0130fb1e1dbaf2e44976d16db2"
-    },
-    {
-      "file": "site/GENOME_INTERACTION_QA.json",
-      "bytes": 848,
-      "sha256": "2b819603110894babf81f826e3b26bf1cccb26e2615affc9fb3d7485533887ee"
-    },
-    {
-      "file": "site/GENOME_NUMERICAL_QA.json",
-      "bytes": 43310,
-      "sha256": "6cb31e018475ba9e9c525ce4cb6c4a526f0b6985098e3f913c59bc11cd5e67bc"
+      "bytes": 7205,
+      "sha256": "3406cacd00e102a46f461523b58bdf99752a97ab2d2294a5f3051ea4303b210e"
     },
     {
       "file": "site/halos.js",
@@ -579,8 +589,8 @@
     },
     {
       "file": "site/index.html",
-      "bytes": 6813,
-      "sha256": "529984c2883ce8f900f8470878f4668477656914d75cda217e11dae02aab4e34"
+      "bytes": 9734,
+      "sha256": "92879202d20a9edae5314f15c40ac5ff49782db4d168ab9909ef254cfd282096"
     },
     {
       "file": "site/loops/chr1.json.gz",
@@ -878,14 +888,19 @@
       "sha256": "befaf9e34fa45d6c046cf56275fa46dee34cdfeaa434947c16f2bad24c473703"
     },
     {
-      "file": "site/README.md",
-      "bytes": 7733,
-      "sha256": "d3a1332075f6ebf155c9e7a390e45543b2d5d63624e395069b8a31b808742950"
+      "file": "site/published-normalizations.js",
+      "bytes": 5518,
+      "sha256": "2c3b7f4694ce937bfbe1ea66ae52f016e52af572b1e1c50a496b8f0fdf16c1fa"
+    },
+    {
+      "file": "site/published-normalizations.json",
+      "bytes": 1413,
+      "sha256": "1d01d8b9ef67d4d780c3956c16076913842eafdcb0233e6cf59a372a406fc363"
     },
     {
       "file": "site/signal-tracks.js",
-      "bytes": 13589,
-      "sha256": "1cb5b3cffcb35b9c40496e9b31b2dfc8fc456e7a88179cdcb7c179881e32e192"
+      "bytes": 13622,
+      "sha256": "192aa383f9df3e6979433582ccea0fb6d52c8fe2f05890f3789b0e37f0abe2e5"
     },
     {
       "file": "site/style.css",
@@ -1143,19 +1158,24 @@
       "sha256": "326ec978248c91eec073ab6c80a19ffb1c0c3eaadc20379e2ff770d05a85ddf6"
     },
     {
-      "file": "site/VALIDATION_REPORT.md",
-      "bytes": 4422,
-      "sha256": "dedb21fde6c39e21dc20df2711a68321c0181261d955156f4f9b72673dfea91e"
+      "file": "site/viewer-features.js",
+      "bytes": 3372,
+      "sha256": "ba1588e5acca43db1e992ed195ad66d6d50bb877cc0150156db80b4655c29a66"
+    },
+    {
+      "file": "site/viewer-features.json",
+      "bytes": 184976,
+      "sha256": "fb37e4731d90cd6c75f4206bb14353807305eb41cc8532ba007bc9f5ffa21f00"
     },
     {
       "file": "site/viewer-v3.css",
-      "bytes": 7323,
-      "sha256": "dd61c38b60d1da5ce5aea63564acf563cb80611dc52cd33a06b94ba4f4361089"
+      "bytes": 8399,
+      "sha256": "fa7b05b3de710f2e2fdb7d96dde7af891197b778882de1bef8a385ed8bd16ae6"
     },
     {
       "file": "site/viewer-v3.js",
-      "bytes": 26778,
-      "sha256": "32b691154dd8bff6797afa69bdc53b3ceda927b0c15f2e4491d3ed26d9bf74ce"
+      "bytes": 34989,
+      "sha256": "3206452fb9f99209dd9069c4e0d3c754468136c62216de18f77108e1956714c1"
     },
     {
       "file": "site/viewer-worker.js",
@@ -1165,5 +1185,74 @@
   ],
   "signal_chromosome_packets": 24,
   "published_loops": 98850,
-  "published_loop_chromosomes": 23
+  "published_loop_chromosomes": 23,
+  "compass_target": {
+    "balance": false,
+    "log_transform": false,
+    "target_scale": 100,
+    "band_bp": 2500000,
+    "percentiles": [
+      2,
+      99
+    ],
+    "verified_against_upstream": true,
+    "browser_verified": false
+  },
+  "published_normalizations": {
+    "version": 1,
+    "methods": {
+      "compass": {
+        "source": "https://github.com/EndeavourSyc/Hi-Compass/blob/main/hicompass/preprocess/hic_norm.py",
+        "balance": false,
+        "percentile_method": "band",
+        "band_bp": 2500000,
+        "percentiles": [
+          2,
+          99
+        ],
+        "target_scale": 100,
+        "diagonals_zeroed": [
+          0,
+          1,
+          -1
+        ],
+        "input_scope": "exported cis counts up to 4.1 Mb"
+      },
+      "evo2hic": {
+        "commit": "633c92de6dd6422ad3b44143bf890a2067f45060",
+        "source_files": [
+          "dataset/normalizer.py",
+          "dataset/data_arguments.py",
+          "dataset/hic_dna_dataset.py"
+        ],
+        "target_option": "hic",
+        "normalization": "mixed",
+        "max_reads": 5000,
+        "denominator": 10,
+        "eps": 1e-05,
+        "cap_max": 1
+      },
+      "hicfoundation": {
+        "commit": "c733ffa6a3de071ba4b3bf6afca6bc9a0c741910",
+        "source_files": [
+          "data_processing/finetune_dataset.py",
+          "data_processing/inference_dataset.py",
+          "inference/main_worker.py"
+        ],
+        "representation": "encoder input intensity and standardized RGB",
+        "normalization_scope": "full selected native viewer window",
+        "rgb_mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "rgb_std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "not_a_universal_task_target": true
+      }
+    }
+  }
 }

@@ -56,7 +56,7 @@
       counts,
     };
   }
-  function windowData(c, r, groups) {
+  function windowData(c, r, groups, linearOnly=false) {
     const n = r.grid,
       s = r.start / r.bin_bp,
       end = s + n;
@@ -75,7 +75,7 @@
       for (let k = c.ptr[i]; k < c.ptr[i + 1] && c.col[k] < end; k++) {
         const j = c.col[k],
           t = c.counts[k],
-          value = Math.fround(Math.log1p(t));
+          value = linearOnly ? 0 : Math.fround(Math.log1p(t));
         ids.push((i - s) * n + j - s);
         counts.push(t);
         logs.push(value);
