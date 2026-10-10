@@ -9,7 +9,6 @@
 .legend .zero{position:absolute;top:10px;transform:translateX(-50%);font-style:normal;font-size:10px;line-height:1}
 
 .status-line{display:flex;align-items:center;gap:12px;min-height:48px}.status-line #status{flex:1}.status-line button{font-size:13px}
-.window-filters .check,.contrast-controls .check{margin-top:0}.window-filters{background:#f1f8f6}.window-filters output{flex:1;align-self:center;color:#31574a;font-size:13px}.contrast-controls{background:#fff8ed}.contrast-controls p{flex:1;min-width:260px;font-size:12px;color:var(--muted);margin:0;align-self:center}.contrast-controls input[type=checkbox],.window-filters input[type=checkbox]{accent-color:#187f88;width:16px;height:16px}
 
 .track-controls{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:0 6px 14px;color:var(--muted);font-size:12px}
 .track-controls>span{font-weight:600}.track-controls label{flex-direction:row;align-items:center;gap:8px;font-weight:400}
@@ -21,7 +20,4 @@
 .signal-track.coverage b{color:#8750a1}#trainingBounds[aria-pressed="true"]{background:#e5f0eb;border-color:#6a9682;color:#244c3b;box-shadow:inset 0 0 0 1px #6a9682}#trainingBounds[aria-pressed="true"]:before{content:'✓ ';}
 .signal-track+.signal-track{margin-top:6px}.track-readout{font-size:12px;min-height:18px;color:var(--muted);margin:15px 7px 0}
 .profile-key{display:flex;gap:10px;align-items:center;padding:3px 2.875% 0 9.125%;font-size:10px;color:var(--muted);min-height:20px;flex-wrap:wrap}.profile-key span:before{content:'';display:inline-block;width:14px;height:2px;background:var(--color);vertical-align:middle;margin-right:4px}.profile-key .reference:before{height:0;border-top:2px dashed #64717c;background:none}.profile-key em{font-style:normal;margin-left:auto}.signal-track.hitrac .signal-label b{color:var(--ink)}
-.compass-notice{padding:14px 18px;background:#eaf5f3;border:1px solid #c2dfd8;border-radius:10px;font-size:13px;color:#31574a}body[data-target=published] .maps{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-target=published] #baselinePanel,body[data-target=published] #predictionPanel,body[data-target=published] .scores,body[data-target=published] .contrast-controls{display:none} @media(max-width:580px){body[data-target=published] .maps{grid-template-columns:1fr}}
 @media(max-width:580px){.track-controls{gap:8px}.signal-label{font-size:12px}.signal-label span{font-size:11px}}
-
-body[data-target=published] .clip-control,body[data-target=published] #trainingBounds,body[data-target=published] .raw-display-control{display:none!important}

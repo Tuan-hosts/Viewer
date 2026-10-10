@@ -1,11 +1,9 @@
 (() => {
  'use strict';
- const $=id=>document.getElementById(id), M=window.HITRAC_MANIFEST, E=window.HITRAC_EXTENSION, C=window.CapacityMath, F=window.ViewerFeatures, N=window.PublishedNormalizations;
+ const $=id=>document.getElementById(id), M=window.HITRAC_MANIFEST, E=window.HITRAC_EXTENSION, C=window.CapacityMath;
  const signalUI=SignalTracks.attach({onSelect:selectDnaseInterval});
- const names={compass:'Hi-Compass · contrast-stretched target · unbalanced',evo2hic:'Evo2HiC · mixed raw-count target',hicfoundation:'HiCFoundation · encoder input',raw:'No normalization',observed:'Shared observed distance',shuffled:'Shuffled endpoints',plb:'Local PLB',window:'Within-window distance'};
- const isPublished=()=>N.has($('method').value);
- const normalizationOptions=()=>({denominator:+$('evoDenominator').value,maxReads:+$('evoMaxReads').value,foundationTask:$('foundationTask').value});
- let trainingBounds=true,featureIndex=null,stretchSpecs=null;
+ const names={raw:'No normalization',observed:'Shared observed distance',shuffled:'Shuffled endpoints',plb:'Local PLB',window:'Within-window distance'};
+ let trainingBounds=true;
  let showLoops=false,loopData=null,loopController=null,loopRequest=0,loopGeometry=null;
  let mode="compare",catalog,source,record,arm,data=null,view={x:0,y:0,size:100},version=0,worker=null,serial=0,pending=new Map(),metricTimer,metricVersion=0,renderPending=false;
  let loadController=null, preparedWindow=null, metricBusy=false, metricQueued=null, metricKey=null;
@@ -23,7 +21,6 @@
  function geometry(){return M.geometries.find(g=>g.id===`${$('bin').value}kb_${$('span').value}Mb`);}
  function chooseArm(){
   if(!catalog||!geometry())return null;
-  if(isPublished())return null;
   if($('method').value!=='raw'&&$('formulation').value!=='ratio')return null;
   const name=$('method').value==='raw'?$('rawModel').value:$('method').value;
   return catalog.settings.find(s=>s.arm.geometry===geometry().id&&s.arm.name===name)||null;
@@ -34,7 +31,7 @@
   $('presetLabel').hidden=!compare;$('methodLabel').hidden=compare;$('rawLabel').hidden=true;
   $('formLabel').hidden=compare||$('method').value==='raw';$('trainingBounds').hidden=!compare;$('fittingLabel').hidden=compare;
   $('showLoops').hidden=false;$('loopStatus').hidden=!showLoops;
-  $('modeHint').textContent=isPublished()?names[$('method').value]:compare?'Fitted regions · matched targets and predictions':'All chromosomes · observed-map normalization';
+  $('modeHint').textContent=compare?'Fitted regions · matched targets and predictions':'All chromosomes · observed-map normalization';
   const previous=$('chrom').value,chromosomes=[...new Set(M.geometries[0].windows.map(w=>w.chrom))].filter(c=>!compare||c==='chr3'||c==='chr4');
   $('chrom').replaceChildren(...chromosomes.map(c=>option(c,c)));$('chrom').value=chromosomes.includes(previous)?previous:compare?'chr3':chromosomes[0];
   $('preset').value=$('method').value==='raw'?$('rawModel').value:$('method').value;
@@ -46,52 +43,44 @@
  }
  function readView(){
   try{
-   let saved;
-   if(location.hash.startsWith('#view='))saved=JSON.parse(decodeURIComponent(location.hash.slice(6)));
-   else {const p=new URLSearchParams(location.hash.slice(1));saved=p.has('setting')?Object.fromEntries(p):window.HITRAC_VIEWER_DEFAULT_STATE||null;}
-   // One-time upgrade of this hosted preview to the requested new target.
-   if(window.HITRAC_VIEWER_DEFAULT_STATE?.method==='compass'&&!saved?.targetRevision)
-    saved={...saved,method:'compass',min:0,max:100,contrastStretch:false,stretchTargets:false,targetRevision:1};
-   return saved;
+   if(location.hash.startsWith('#view='))return JSON.parse(decodeURIComponent(location.hash.slice(6)));
+   const p=new URLSearchParams(location.hash.slice(1));return p.has('setting')?Object.fromEntries(p):null;
   }catch{return null;}
  }
  function persist(){
   if(!record||!validBounds())return;
-  const s={targetRevision:1,...normalizationOptions(),mode,trainingBounds,showLoops,window:record.id,method:$('method').value,formulation:$('formulation').value,rawModel:$('rawModel').value,min:+ $('lo').value,max:+ $('hi').value,rawMax:+ $('rawMax').value,fitting:$('fitting').checked,loopsOnly:$('loopsOnly').checked,peaksOnly:$('peaksOnly').checked,contrastStretch:$('contrastStretch').checked,stretchPercentile:+$('stretchPercentile').value,stretchTargets:$('stretchTargets').checked,view:{...view}};
+  const s={mode,trainingBounds,showLoops,window:record.id,method:$('method').value,formulation:$('formulation').value,rawModel:$('rawModel').value,min:+ $('lo').value,max:+ $('hi').value,rawMax:+ $('rawMax').value,fitting:$('fitting').checked,view:{...view}};
   history.replaceState(null,'','#view='+encodeURIComponent(JSON.stringify(s)));
   try{localStorage.setItem('activehitrac.viewer.clipping.v1',JSON.stringify({min:s.min,max:s.max}));}catch{}
  }
  function clearMetrics(){++metricVersion;metricQueued=null;for(const id of ['mse','rmse','pcc','baseMse','baseRmse','basePcc'])$(id).textContent='—';$('scoreSummary').textContent='';}
  function terminate(){if(worker)worker.terminate();worker=null;for(const p of pending.values())p.reject(Error('Superseded window'));pending.clear();clearTimeout(metricTimer);metricQueued=null;metricBusy=false;metricKey=null;}
  function newWorker(){
-  terminate();const active=new Worker(window.HITRAC_VIEWER_WORKER_URL||'viewer-worker.js?v=20260923signals');worker=active;
+  terminate();const active=new Worker('viewer-worker.js?v=20260923signals');worker=active;
   active.onmessage=e=>{if(worker!==active)return;const p=pending.get(e.data.id);if(!p)return;pending.delete(e.data.id);if(e.data.durationMs!==undefined)diagnostic(p.type+'Ms',Math.round(e.data.durationMs));e.data.error?p.reject(Error(e.data.error)):p.resolve(e.data.result);};
   active.onerror=e=>{if(worker!==active)return;status('Could not calculate map metrics. Use Retry.',true);for(const p of pending.values())p.reject(Error(e.message));pending.clear();};
  }
  function call(type,payload){return new Promise((resolve,reject)=>{if(!worker){reject(Error('Map worker is unavailable. Use Retry.'));return;}const id=++serial;pending.set(id,{resolve,reject,type});worker.postMessage({id,type,data:payload});});}
  async function prepareWindow(selected,groups,signal){
-  if(preparedWindow?.id===selected.id&&preparedWindow.linearOnly===isPublished())return preparedWindow;
+  if(preparedWindow?.id===selected.id)return preparedWindow;
   const [chromosome,dnase,peaks]=await Promise.all([
     HiTracGenome.loadPacket(M.packets[selected.packet],{signal}),
     SignalTracks.loadDnase(selected,signal),
     PeakAxes.load(selected,signal).catch(error=>{if(error.name==='AbortError')throw error;console.warn(error.message);return null;})
   ]);
   if(signal.aborted)throw new DOMException('Selection changed','AbortError');
-  const genome=HiTracGenome.windowData(chromosome,selected,groups,isPublished()),raw=upperRaw(genome.map);
-  preparedWindow={id:selected.id,linearOnly:isPublished(),genome,raw,signals:{dnase,peaks,endpoints:SignalTracks.endpoints(genome.map)}};
+  const genome=HiTracGenome.windowData(chromosome,selected,groups),raw=upperRaw(genome.map);
+  preparedWindow={id:selected.id,genome,raw,signals:{dnase,peaks,endpoints:SignalTracks.endpoints(genome.map)}};
   diagnostic('chromosomeCacheBytes',HiTracGenome.cacheStats().bytes);
   return preparedWindow;
  }
- function upperRaw(map){const n=map.n,p=n*(n+1)/2,raw=new Float32Array(p),rawCounts=new Float32Array(p),support=new Uint8Array(p);let k=0;for(let i=0;i<n;i++)for(let j=i;j<n;j++,k++)support[k]=map.v[i]&&map.v[j]?1:0;
-  for(let p=0;p<map.index.length;p++){const i=Math.floor(map.index[p]/n),j=map.index[p]%n,t=C.index(i,j,n);raw[t]=map.logs[p];rawCounts[t]=map.counts[p];}return {raw,rawCounts,rawSupport:support};
+ function upperRaw(map){const n=map.n,p=n*(n+1)/2,raw=new Float32Array(p),support=new Uint8Array(p);let k=0;for(let i=0;i<n;i++)for(let j=i;j<n;j++,k++)support[k]=map.v[i]&&map.v[j]?1:0;
+  for(let p=0;p<map.index.length;p++){const i=Math.floor(map.index[p]/n),j=map.index[p]%n;raw[C.index(i,j,n)]=map.logs[p];}return {raw,rawSupport:support};
  }
  function populateWindows(start){
   arm=chooseArm();const eligible=new Set((arm||catalog.settings.find(s=>s.arm.geometry===geometry().id))?.windows.map(w=>w.id)||[]);
-  const candidates=geometry().windows.filter(w=>w.chrom===$('chrom').value&&(!(mode==='compare'||$('fitting').checked)||eligible.has(w.id)));
-  const choices=candidates.filter(w=>F.allows(featureIndex,w,$('loopsOnly').checked,$('peaksOnly').checked));
-  $('filterSummary').textContent=`${choices.length.toLocaleString()} / ${candidates.length.toLocaleString()} windows · ${$('chrom').value}`;
-  $('resetFilters').disabled=!$('loopsOnly').checked&&!$('peaksOnly').checked;
-  $('window').replaceChildren(...choices.map(w=>{const counts=F.annotation(featureIndex,w);return option(`${mb(w.start)}–${mb(w.end)} Mb · ${counts[0]} loops · ${counts[1]} DNase peaks`,w.id);}));
+  const choices=geometry().windows.filter(w=>w.chrom===$('chrom').value&&(!(mode==='compare'||$('fitting').checked)||eligible.has(w.id)));
+  $('window').replaceChildren(...choices.map(w=>option(`${mb(w.start)}–${mb(w.end)} Mb`,w.id)));
   const selected=choices.find(w=>w.start<=start&&start<w.end)||choices[0];if(selected)$('window').value=selected.id;
   $('window').disabled=!selected;return selected;
  }
@@ -101,22 +90,17 @@
   loopController?.abort();++loopRequest;loopData=null;loopGeometry=null;
   if(showLoops)$('loopStatus').textContent='Loading loops…';
   loadController?.abort();const controller=new AbortController();loadController=controller;
-  terminate();clearMetrics();data=null;stretchSpecs=null;
+  terminate();clearMetrics();data=null;
   for(const id of ['raw','target','baseline','prediction'])drawCache.delete($(id));
   if(start!==undefined)populateWindows(start);else arm=chooseArm();
   record=geometry().windows.find(w=>w.id===$('window').value);
-  $('rawLabel').hidden=true;$('formLabel').hidden=mode==='compare'||$('method').value==='raw'||isPublished();
-  document.body.dataset.target=isPublished()?'published':'original';$('compassNotice').hidden=!isPublished();
-  $('publishedOptions').hidden=!isPublished();$('evoDenominatorLabel').hidden=$('evoMaxReadsLabel').hidden=$('method').value!=='evo2hic';$('foundationTaskLabel').hidden=$('method').value!=='hicfoundation';
-  for(const id of ['lo','hi'])$(id).disabled=isPublished();
-  if(isPublished()){$('lo').value=0;$('hi').value=$('method').value==='compass'?100:1;$('contrastStretch').checked=false;}
-  $('modeHint').textContent=isPublished()?names[$('method').value]:mode==='compare'?'Fitted regions · matched targets and predictions':'All chromosomes · observed-map normalization';
+  $('rawLabel').hidden=true;$('formLabel').hidden=mode==='compare'||$('method').value==='raw';
   $('trainingBounds').disabled=!arm;
   if(mode==='compare'&&arm&&trainingBounds){$('lo').value=arm.arm.clip_min;$('hi').value=arm.arm.clip_max;}
   $('trainingBounds').setAttribute('aria-pressed',String(trainingBounds));
   const at=$('window').selectedIndex;$('prev').disabled=at<=0;$('next').disabled=at<0||at===$('window').options.length-1;
   $('export').disabled=true;$('copy').disabled=!record;
-  if(!record){$('region').textContent='No matching windows';$('geometry').textContent='';$('stretchSummary').textContent='No matching window. Turn off a window filter or choose another chromosome.';status('No windows match these filters on this chromosome. Change chromosome or use “Show all windows”.');drawAll();return;}
+  if(!record){$('region').textContent='No fitting regions';$('geometry').textContent='';status('No fitting regions on this chromosome. Choose chr3/chr4 or turn off “Fitting regions only”.');drawAll();return;}
   view=record.id===previousWindow?previousView:{x:0,y:0,size:record.grid};if(restore?.view)view={...restore.view};constrain();
   $('region').textContent=`${record.chrom}:${mb(record.start)}–${mb(record.end)} Mb`;
   $('geometry').textContent=`${record.bin_bp/1000}-kb bins · ${(record.end-record.start)/1e6}-Mb window`;
@@ -132,18 +116,7 @@
    ]);
    if(v!==version)return;
    const {genome,raw,signals}=prepared;
-   if(isPublished()){
-    const normalized=N.makeTarget($('method').value,genome.map,featureIndex.compass[selected.packet],normalizationOptions());
-    data={...raw,signals,...normalized,baseline:null,prediction:null,meta:{window:record},capacity:false,scoreBaseline:false,published:true};
-    $('lo').value=normalized.low;$('hi').value=normalized.high;
-    let rawMaximum=1;
-    for(let k=0;k<raw.rawCounts.length;k++)if(raw.rawSupport[k])rawMaximum=Math.max(rawMaximum,raw.rawCounts[k]);
-    $('rawMax').value=rawMaximum;
-    $('targetTitle').textContent=normalized.title;$('targetCaption').textContent=normalized.caption;
-    $('compassNotice').textContent=normalized.notice;
-    $('normalizationSource').href=$('method').value==='compass'?'https://github.com/EndeavourSyc/Hi-Compass/blob/main/hicompass/preprocess/hic_norm.py':$('method').value==='evo2hic'?'https://github.com/CHNFTQ/Evo2HiC/blob/633c92de6dd6422ad3b44143bf890a2067f45060/dataset/normalizer.py':'https://github.com/Noble-Lab/HiCFoundation/blob/c733ffa6a3de071ba4b3bf6afca6bc9a0c741910/data_processing/finetune_dataset.py';
-    $('baseCaption').textContent='No model trained on this target';$('predictionCaption').textContent='No model trained on this target';
-   }else if(w){
+   if(w){
     data={...loaded,...raw,signals};
     $('targetTitle').textContent='Observed · training target';$('targetCaption').textContent=`${names[arm.arm.method]} · trained [${arm.arm.clip_min}, ${arm.arm.clip_max}]`;
     $('baseCaption').textContent='Fitted to the same target';$('predictionCaption').textContent=`Setting ${arm.arm.id} · fitting region`;
@@ -154,11 +127,11 @@
     $('targetTitle').textContent='Observed · transformed';$('targetCaption').textContent=method==='raw'?'ln(1 + PET counts)':ratio?'ln(O/E) · zeros at lower bound':'ln(1 + O/E)';
     $('baseCaption').textContent='Original ln(1 + counts) baseline';$('predictionCaption').textContent=w?'Unavailable':'No fitted prediction for this selection';
    }
-   if(!w&&!isPublished())await call('init',{meta:data.meta,target:data.target,prediction:data.prediction,baseline:data.baseline,valid:data.valid,scoreBaseline:data.scoreBaseline,exploreRatio:data.exploreRatio});if(v!==version)return;
+   if(!w)await call('init',{meta:data.meta,target:data.target,prediction:data.prediction,baseline:data.baseline,valid:data.valid,scoreBaseline:data.scoreBaseline,exploreRatio:data.exploreRatio});if(v!==version)return;
    await call('profileInit',{n:genome.map.n,v:genome.map.v,index:genome.map.index,logs:genome.map.logs});if(v!==version)return;
    diagnostic('loadMs',Math.round(performance.now()-started));
    diagnostic('mapArrayBytes',arrayBytes([data.raw,data.rawSupport])+2*arrayBytes([data.target,data.prediction,data.baseline,data.valid]));
-   $('export').disabled=false;status(isPublished()?'Published preprocessing values are displayed directly; zooming does not recompute the normalization.':data.capacity?'':$('method').value==='raw'?'':'Switch to Compare predictions for a baseline and model fitted to the same normalized target.');
+   $('export').disabled=false;status(data.capacity?'':$('method').value==='raw'?'':'Switch to Compare predictions for a baseline and model fitted to the same normalized target.');
    render();loadLoops();
   }catch(e){if(v===version){controller.abort();terminate();data=null;drawAll();clearMetrics();status(e.name==='AbortError'?'Download timed out. Use Retry.':e.message,true);$('predictionCaption').textContent='Unavailable';}}finally{clearTimeout(timeout);}
  }
@@ -178,33 +151,25 @@
  function screenIndices(){
   const n=record.grid,key=[n,view.x,view.y,view.size].join(':');
   if(screenCache?.key===key)return screenCache.indices;
-  const side=plot.size,x=new Uint32Array(side),indices=new Uint32Array(side*side),excluded=new Uint8Array(side*side);
+  const side=plot.size,x=new Uint32Array(side),indices=new Uint32Array(side*side);
   for(let col=0;col<side;col++)x[col]=Math.min(n-1,Math.floor(view.x+(col+.5)*view.size/side));
   for(let row=0;row<side;row++){
    const i=Math.min(n-1,Math.floor(view.y+(row+.5)*view.size/side));
-   for(let col=0;col<side;col++){const at=row*side+col;indices[at]=C.index(i,x[col],n);excluded[at]=Math.abs(i-x[col])<=1?1:0;}
+   for(let col=0;col<side;col++)indices[row*side+col]=C.index(i,x[col],n);
   }
-  screenCache={key,indices,excluded};return indices;
+  screenCache={key,indices};return indices;
  }
- function displaySpecs(){
-  if(isPublished()||!data||!$('contrastStretch').checked)return null;
-  const upper=+$('stretchPercentile').value,key=`${record.id}:${upper}:${$('stretchTargets').checked}`;
-  if(stretchSpecs?.key===key)return stretchSpecs;
-  const raw={...featureIndex.contrast[record.packet].bounds[String(upper)],kind:'counts'};
-  const target=!$('stretchTargets').checked?null:$('method').value==='raw'?raw:F.targetBounds(data.target,data.valid,record.grid,upper);
-  stretchSpecs={key,raw,target};return stretchSpecs;
- }
- function draw(id,values,support,low,high,spec=null){
+ function draw(id,values,support,low,high){
   const canvas=$(id),ctx=canvas.getContext('2d');
   if(!values||!record){drawCache.delete(canvas);ctx.fillStyle='#fff';ctx.fillRect(0,0,800,800);ctx.fillStyle='#7b8991';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText(id==='prediction'?'No prediction for this selection':'Select a window',400,390);return;}
   const indices=screenIndices(),last=drawCache.get(canvas);
   const overlay=showLoops?loopData:null;
-  if(last&&last.values===values&&last.support===support&&last.low===low&&last.high===high&&last.indices===indices&&last.overlay===overlay&&last.spec===spec)return;
-  drawCache.set(canvas,{values,support,low,high,indices,overlay,spec});
+  if(last&&last.values===values&&last.support===support&&last.low===low&&last.high===high&&last.indices===indices&&last.overlay===overlay)return;
+  drawCache.set(canvas,{values,support,low,high,indices,overlay});
   ctx.fillStyle='#fff';ctx.fillRect(0,0,800,800);
   let pixels=pixelCache.get(canvas);if(!pixels){pixels=ctx.createImageData(plot.size,plot.size);pixelCache.set(canvas,pixels);}const p=pixels.data;
   for(let at=0;at<indices.length;at++){
-   const k=indices[at],value=spec?F.stretch(values[k],spec,screenCache.excluded[at]):values[k];if(isPublished()&&id==='target')N.writeColor(p,at*4,value,support[k],low,high);else MapColors.write(p,at*4,value,support[k],low,high);
+   const k=indices[at];MapColors.write(p,at*4,values[k],support[k],low,high);
   }
   ctx.putImageData(pixels,plot.x,plot.y);ctx.strokeStyle='#d5dde2';ctx.strokeRect(plot.x-.5,plot.y-.5,plot.size+1,plot.size+1);ctx.fillStyle='#596b76';ctx.font='18px system-ui';
   for(const f of [0,.5,1]){ctx.textAlign='center';ctx.fillText(mb(record.start+(view.x+f*view.size)*record.bin_bp),plot.x+f*plot.size,plot.y+plot.size+30);ctx.textAlign='right';ctx.fillText(mb(record.start+(view.y+f*view.size)*record.bin_bp),plot.x-10,plot.y+f*plot.size+6);}ctx.textAlign='center';ctx.fillText('Genomic position (Mb)',plot.x+plot.size/2,790);
@@ -215,15 +180,7 @@
  function drawAll(){const [lo,hi]=bounds();
   loopGeometry=showLoops&&loopData&&record?PublishedLoops.rectangles(loopData,record,view,plot):null;
   if(loopGeometry)$('loopStatus').textContent=`${loopGeometry.count.toLocaleString()} loops visible · purple outlines`;
-  const specs=displaySpecs();
-  draw('raw',isPublished()?data?.rawCounts:data?.raw,data?.rawSupport,0,specs?100:+$('rawMax').value,specs?.raw);
-  for(const id of (isPublished()?['target']:mode==='compare'?['target','baseline','prediction']:['target','baseline'])){
-   // Explore's normalized baseline is still in raw-log units. Do not pretend
-   // that its values share the normalized target's units.
-   const spec=specs&&$('stretchTargets').checked?(id==='baseline'&&!data?.capacity?specs.raw:specs.target):null;
-   draw(id,data?.[id],data?.valid,spec?0:lo,spec?100:hi,spec);
-  }
-  signalUI.update(data?.signals,record,view,{lo,hi,rawMax:+$('rawMax').value,published:isPublished()});}
+  draw('raw',data?.raw,data?.rawSupport,0,+ $('rawMax').value);for(const id of (mode==='compare'?['target','baseline','prediction']:['target','baseline']))draw(id,data?.[id],data?.valid,lo,hi);signalUI.update(data?.signals,record,view,{lo,hi,rawMax:+$('rawMax').value});}
  function showMetrics(result,job){
   signalUI.setProfiles(result.profiles,record.id);
   for(const [key,prefix] of [['prediction',''],['baseline','base']]){const m=result[key];if(!m)continue;$(prefix?'baseMse':'mse').textContent=number(m.rangeNormalizedMse);$(prefix?'baseRmse':'rmse').textContent=number(m.rangeNormalizedRmse);$(prefix?'basePcc':'pcc').textContent=number(m.pcc,5);}
@@ -248,29 +205,14 @@
   if(!validBounds()){clearTimeout(metricTimer);clearMetrics();metricKey=null;$('export').disabled=true;status('Enter a minimum and maximum, with maximum larger than minimum.',true);return;}
   if(!(+$('rawMax').value>0)||!Number.isFinite(+$('rawMax').value)){clearTimeout(metricTimer);clearMetrics();metricKey=null;$('export').disabled=true;status('Raw color maximum must be positive.',true);return;}
   constrain();drawAll();diagnostic('renderMs',Math.round(performance.now()-started));
-  const specs=displaySpecs();
-  document.querySelectorAll('.lower').forEach(e=>e.textContent=specs?.target?'0':$('lo').value);document.querySelectorAll('.upper').forEach(e=>e.textContent=specs?.target?'100':$('hi').value);$('rawLegend').textContent=specs?'100':$('rawMax').value;
-  $('rawCaption').textContent=isPublished()?'Original integer PET counts · full observed intensity range':specs?'PET counts · contrast stretched to 0–100':'ln(1 + PET counts)';
-  $('stretchPercentile').disabled=!$('contrastStretch').checked;$('stretchTargets').disabled=!$('contrastStretch').checked;
-  $('rawMax').disabled=$('contrastStretch').checked;
-  if(specs){
-   const r=specs.raw,t=specs.target,format=x=>Number(x.toPrecision(5));
-   $('stretchSummary').textContent=`Raw PETs: ${format(r.low)}–${format(r.high)} → 0–100${r.fallback?' · sparse fallback':''}. ${t?(t.kind==='counts'?'Raw-model panels use the same PET scale.':`Comparison panels share observed-target bounds ${format(t.low)}–${format(t.high)}.`):'Comparison panels retain selected limits.'} Display only; no ICE balancing. Bounds stay fixed while zooming.`;
-  }else if(record)$('stretchSummary').textContent='Original color limits. Contrast stretching changes colors only; comparison metrics retain the saved target units.';
+  document.querySelectorAll('.lower').forEach(e=>e.textContent=$('lo').value);document.querySelectorAll('.upper').forEach(e=>e.textContent=$('hi').value);$('rawLegend').textContent=$('rawMax').value;
   for(const id of ['raw','target','baseline','prediction']){
-   const stretched=specs&&(id==='raw'||$('stretchTargets').checked),[a,b]=stretched?[0,100]:id==='raw'?[0,+$('rawMax').value]:bounds(),legend=$(id).parentElement.querySelector('.legend'),bar=legend.querySelector('i');
-   if(id==='baseline'&&specs&&$('stretchTargets').checked){legend.querySelector('.lower').textContent='0';legend.querySelector('.upper').textContent='100';}
-   bar.style.background=isPublished()&&id==='target'?'linear-gradient(90deg,#fff,#f00)':MapColors.gradient(a,b);legend.title='White: minimum · Red: maximum';
+   const [a,b]=id==='raw'?[0,+$('rawMax').value]:bounds(),legend=$(id).parentElement.querySelector('.legend'),bar=legend.querySelector('i');
+   bar.style.background=MapColors.gradient(a,b);legend.title='White: minimum · Red: maximum';
    legend.querySelector('.zero')?.remove();
   }
   if(record)$('zoom').value=[1,2,4,8,16,32].reduce((a,b)=>Math.abs(b-record.grid/view.size)<Math.abs(a-record.grid/view.size)?b:a);
   persist();$('export').disabled=!data;if(!data)return;
-  if(isPublished()){
-   clearTimeout(metricTimer);clearMetrics();metricKey=null;
-   const rawMax=+$('rawMax').value;
-   if(data.compassProfiles?.rawMax!==rawMax)data.compassProfiles=F.publishedProfiles(data,record.grid,rawMax);
-   signalUI.setProfiles(data.compassProfiles,record.id);return;
-  }
   const [lo,hi]=bounds(),key=[version,lo,hi,+$('rawMax').value,Math.floor(view.x),Math.floor(view.y),Math.ceil(view.x+view.size),Math.ceil(view.y+view.size)].join(':');
   if(key===metricKey)return;metricKey=key;
   clearTimeout(metricTimer);clearMetrics();
@@ -283,13 +225,10 @@
  function zoom(size,fx=.5,fy=.5){if(!record)return;const next=clip(size,Math.min(10,record.grid),record.grid);view.x+=fx*(view.size-next);view.y+=fy*(view.size-next);view.size=next;constrain();schedule();}
  for(const id of ['raw','target','baseline','prediction']){const canvas=$(id);let drag=null;const pos=e=>{const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*800/r.width,y:(e.clientY-r.top)*800/r.height};};
   canvas.onpointerdown=e=>{if(!data)return;drag={...pos(e),vx:view.x,vy:view.y,size:view.size};canvas.setPointerCapture(e.pointerId);};canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=()=>drag=null;
-  canvas.onpointermove=e=>{if(!data)return;const p=pos(e);if(drag){view.x=drag.vx-(p.x-drag.x)*drag.size/plot.size;view.y=drag.vy-(p.y-drag.y)*drag.size/plot.size;constrain();schedule();return;}const x=(p.x-plot.x)/plot.size,y=(p.y-plot.y)/plot.size;if(x<0||x>=1||y<0||y>=1)return;const i=Math.floor(view.y+y*view.size),j=Math.floor(view.x+x*view.size),k=C.index(i,j,record.grid);$('hover').textContent=`${record.chrom}: ${(record.start+i*record.bin_bp).toLocaleString()} × ${(record.start+j*record.bin_bp).toLocaleString()} bp · ${Math.abs(i-j)*record.bin_bp/1000} kb apart${data.valid[k]?'':' · Unavailable for comparison'}${isPublished()?` · PET ${data.rawCounts[k]} · normalized ${number(data.target[k],6)}${$('method').value==='hicfoundation'?` · standardized RGB [${N.foundationRGB(data.target[k],true).map(x=>number(x,5)).join(', ')}]`:''}`:''}`;};
+  canvas.onpointermove=e=>{if(!data)return;const p=pos(e);if(drag){view.x=drag.vx-(p.x-drag.x)*drag.size/plot.size;view.y=drag.vy-(p.y-drag.y)*drag.size/plot.size;constrain();schedule();return;}const x=(p.x-plot.x)/plot.size,y=(p.y-plot.y)/plot.size;if(x<0||x>=1||y<0||y>=1)return;const i=Math.floor(view.y+y*view.size),j=Math.floor(view.x+x*view.size),k=C.index(i,j,record.grid);$('hover').textContent=`${record.chrom}: ${(record.start+i*record.bin_bp).toLocaleString()} × ${(record.start+j*record.bin_bp).toLocaleString()} bp · ${Math.abs(i-j)*record.bin_bp/1000} kb apart${data.valid[k]?'':' · Unavailable for comparison'}`;};
   canvas.addEventListener('wheel',e=>{if(!data)return;e.preventDefault();const p=pos(e);zoom(view.size*(e.deltaY>0?1.2:1/1.2),clip((p.x-plot.x)/plot.size,0,1),clip((p.y-plot.y)/plot.size,0,1));},{passive:false});
  }
- for(const id of ['bin','span','chrom','method','formulation','rawModel','fitting','loopsOnly','peaksOnly'])$(id).onchange=()=>load(record?.start||0);
- for(const id of ['evoDenominator','evoMaxReads','foundationTask'])$(id).onchange=()=>load(record?.start||0);
- $('resetFilters').onclick=()=>{$('loopsOnly').checked=false;$('peaksOnly').checked=false;load(record?.start||0);};
- for(const id of ['contrastStretch','stretchPercentile','stretchTargets'])$(id).onchange=()=>{stretchSpecs=null;render();};
+ for(const id of ['bin','span','chrom','method','formulation','rawModel','fitting'])$(id).onchange=()=>load(record?.start||0);
  $('exploreMode').onclick=()=>switchMode('explore');$('compareMode').onclick=()=>switchMode('compare');
  $('showLoops').onclick=()=>{showLoops=!showLoops;$('showLoops').setAttribute('aria-pressed',String(showLoops));$('loopStatus').hidden=!showLoops;loopController?.abort();++loopRequest;loopData=null;render();if(showLoops)loadLoops();};
  $('preset').onchange=()=>{const name=$('preset').value;$('method').value=name.startsWith('raw')?'raw':name;if(name.startsWith('raw'))$('rawModel').value=name;$('formulation').value='ratio';load(record?.start||0);};
@@ -310,15 +249,10 @@
   document.querySelectorAll('button,select,input').forEach(el=>el.disabled=true);
   try{
   if(!globalThis.Worker||!globalThis.DecompressionStream||!globalThis.crypto?.subtle)throw Error('Please use a current Chrome, Edge, Firefox or Safari browser.');
-  [catalog,source,featureIndex]=await Promise.all(['capacity/catalog.json','capacity/source.json','viewer-features.json'].map(loadIndex));
-  if(featureIndex.source_sha256!==M.source_sha256||featureIndex.bw_sha256!==M.bw_sha256)throw Error('Display annotations do not match the contact/DNase source.');
+  [catalog,source]=await Promise.all(['capacity/catalog.json','capacity/source.json'].map(loadIndex));
   const chromosomes=[...new Set(M.geometries[0].windows.map(w=>w.chrom))];$('chrom').replaceChildren(...chromosomes.map(c=>option(c,c)));
   let saved=readView(),found;trainingBounds=saved?.trainingBounds!==false;showLoops=(saved?.showLoops??saved?.publishedLoops)===true;
   $('showLoops').setAttribute('aria-pressed',String(showLoops));
-  $('loopsOnly').checked=saved?.loopsOnly===true;$('peaksOnly').checked=saved?.peaksOnly===true;
-  $('contrastStretch').checked=saved?.contrastStretch===true;$('stretchPercentile').value=saved?.stretchPercentile===98?'98':'99';$('stretchTargets').checked=saved?.stretchTargets!==false;
-  if(saved?.denominator>1)$('evoDenominator').value=saved.denominator;if(saved?.maxReads>0)$('evoMaxReads').value=saved.maxReads;
-  if(['finetune','loops','enhance100','enhanceMax','singlecell'].includes(saved?.foundationTask))$('foundationTask').value=saved.foundationTask;
   if(saved?.setting){const s=catalog.settings.find(s=>s.arm.id===+saved.setting);if(s)saved={...saved,method:s.arm.method,rawModel:s.arm.name.startsWith('raw')?s.arm.name:'raw1',formulation:'ratio',view:saved.size?{x:+saved.x||0,y:+saved.y||0,size:+saved.size}:undefined};}
   if(saved?.window)found=M.geometries.flatMap(g=>g.windows).find(w=>w.id===saved.window);
   $('bin').value=found?found.bin_bp/1000:10;$('span').value=found?(found.end-found.start)/1e6:1;$('chrom').value=found?found.chrom:'chr3';

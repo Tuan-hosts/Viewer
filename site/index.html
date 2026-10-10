@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="viewer-v3.css?v=20261010published"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewer · K562 HiTrAC</title><link rel="stylesheet" href="viewer-v3.css?v=20260930loops"></head>
 <body data-mode="compare">
 <header><div><p class="eyebrow">ACTIVEHITRAC</p><h1>Viewer <span>K562</span></h1><p>Explore contact maps and compare predictions.</p></div><a href="https://github.com/Tuan-hosts/Viewer" target="_blank" rel="noopener">GitHub ↗</a></header>
 <main>
@@ -13,33 +13,14 @@
  <div class="arrows"><button id="prev" aria-label="Previous window">←</button><button id="next" aria-label="Next window">→</button></div>
  <label id="fittingLabel" class="check" hidden><input id="fitting" type="checkbox">Fitting regions only</label>
 </section>
-<section class="toolbar window-filters" aria-label="Window filters">
- <label class="check"><input id="loopsOnly" type="checkbox">Hide windows without loops</label>
- <label class="check" title="Uses the existing fixed p95 DNase signal intervals, not newly called peaks."><input id="peaksOnly" type="checkbox">Hide windows without DNase peaks</label>
- <output id="filterSummary" role="status" aria-live="polite"></output>
- <button id="resetFilters">Show all windows</button>
-</section>
-<section class="toolbar contrast-controls" aria-label="Contrast stretching">
- <label class="check"><input id="contrastStretch" type="checkbox">Hi-Compass-style contrast stretch</label>
- <label>Percentiles<select id="stretchPercentile"><option value="99">2–99% · current code</option><option value="98">2–98% · earlier setting</option></select></label>
- <label class="check"><input id="stretchTargets" type="checkbox" checked>Stretch comparison panels too</label>
- <p id="stretchSummary">Display only. Raw PET counts; no ICE balancing.</p>
-</section>
 <section class="toolbar targets" aria-label="Target and clipping">
- <label id="presetLabel">Training target / published method<select id="preset"><option value="compass">Hi-Compass · contrast stretching · unbalanced</option><option value="evo2hic">Evo2HiC · mixed raw-count target</option><option value="hicfoundation">HiCFoundation · encoder input</option><option value="raw1">No normalization · clip [0, 1]</option><option value="raw2">No normalization · clip [0, 2]</option><option value="observed">Shared observed distance</option><option value="shuffled">Shuffled endpoints</option><option value="plb">Local PLB</option><option value="window">Within-window distance</option></select></label>
- <label id="methodLabel" hidden>Normalization<select id="method"><option value="compass">Hi-Compass · contrast stretching · unbalanced</option><option value="evo2hic">Evo2HiC · mixed raw-count target</option><option value="hicfoundation">HiCFoundation · encoder input</option><option value="raw">No normalization</option><option value="observed">Shared observed distance</option><option value="shuffled">Shuffled endpoints</option><option value="plb">Local PLB</option><option value="window">Within-window distance</option></select></label>
+ <label id="presetLabel">Training target<select id="preset"><option value="raw1">No normalization · clip [0, 1]</option><option value="raw2">No normalization · clip [0, 2]</option><option value="observed">Shared observed distance</option><option value="shuffled">Shuffled endpoints</option><option value="plb">Local PLB</option><option value="window">Within-window distance</option></select></label>
+ <label id="methodLabel" hidden>Normalization<select id="method"><option value="raw">No normalization</option><option value="observed">Shared observed distance</option><option value="shuffled">Shuffled endpoints</option><option value="plb">Local PLB</option><option value="window">Within-window distance</option></select></label>
  <label id="formLabel" hidden>Log transform<select id="formulation"><option value="ratio">ln(O/E)</option><option value="log1p">ln(1 + O/E)</option></select></label>
  <label id="rawLabel" hidden>Raw model<select id="rawModel"><option value="raw1">Training clip [0, 1]</option><option value="raw2">Training clip [0, 2]</option></select></label>
- <label class="clip-control">Clip minimum<input id="lo" type="number" step="0.25" value="-10"></label>
- <label class="clip-control">Clip maximum<input id="hi" type="number" step="0.25" value="10"></label>
+ <label>Clip minimum<input id="lo" type="number" step="0.25" value="-10"></label>
+ <label>Clip maximum<input id="hi" type="number" step="0.25" value="10"></label>
  <button id="trainingBounds" aria-pressed="true" title="Automatically use this model’s training limits. Editing a limit switches to custom bounds.">Use training bounds</button>
-</section>
-<p id="compassNotice" class="compass-notice" hidden>Hi-Compass contrast stretching: subtract the lower percentile, divide by the percentile range, then multiply by 100. No logarithm or O/E.</p>
-<section id="publishedOptions" class="toolbar" aria-label="Published normalization settings" hidden>
- <label id="evoDenominatorLabel" hidden>Evo2HiC denominator<input id="evoDenominator" type="number" min="1.01" step="1" value="10"></label>
- <label id="evoMaxReadsLabel" hidden>Evo2HiC max reads<input id="evoMaxReads" type="number" min="11" step="1" value="5000"></label>
- <label id="foundationTaskLabel" hidden>HiCFoundation input path<select id="foundationTask"><option value="finetune">General encoder / fine-tuning</option><option value="loops">Loop inference · cutoff 1000</option><option value="enhance100">Low-coverage enhancement · cutoff 100</option><option value="enhanceMax">High-coverage enhancement · window max</option><option value="singlecell">Single-cell enhancement · cutoff 100</option></select></label>
- <a id="normalizationSource" href="https://github.com/EndeavourSyc/Hi-Compass/blob/main/hicompass/preprocess/hic_norm.py" target="_blank" rel="noopener">Normalization source code ↗</a>
 </section>
 <div class="status-line"><p id="status" role="status" aria-live="polite">Loading maps…</p><button id="retry" hidden>Retry</button></div><output id="diagnostics" hidden></output>
 <section class="map-section">
@@ -47,13 +28,13 @@
  <div class="loop-controls"><button id="showLoops" aria-pressed="false" title="Show cLoops2 loops">Show loops</button><span id="loopStatus" role="status" aria-live="polite" hidden></span></div>
  <div id="trackControls" class="track-controls"><span>Signals and profiles</span></div>
  <div class="maps">
-  <article><h3>Observed · raw</h3><p id="rawCaption">ln(1 + PET counts)</p><canvas id="raw" width="800" height="800" aria-label="Original observed contacts"></canvas><div class="legend"><span>0</span><i></i><span id="rawLegend">2</span></div></article>
+  <article><h3>Observed · raw</h3><p>ln(1 + PET counts)</p><canvas id="raw" width="800" height="800" aria-label="Original observed contacts"></canvas><div class="legend"><span>0</span><i></i><span id="rawLegend">2</span></div></article>
   <article><h3 id="targetTitle">Observed · target</h3><p id="targetCaption"></p><canvas id="target" width="800" height="800" aria-label="Observed target"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
-  <article id="baselinePanel"><h3>Distance + DNase baseline</h3><p id="baseCaption"></p><canvas id="baseline" width="800" height="800" aria-label="Distance and accessibility baseline"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
+  <article><h3>Distance + DNase baseline</h3><p id="baseCaption"></p><canvas id="baseline" width="800" height="800" aria-label="Distance and accessibility baseline"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
   <article id="predictionPanel"><h3>Overfit prediction</h3><p id="predictionCaption"></p><canvas id="prediction" width="800" height="800" aria-label="Overfit neural prediction"></canvas><div class="legend"><span class="lower"></span><i></i><span class="upper"></span></div></article>
  </div>
  <p id="trackReadout" class="track-readout" aria-live="off"></p>
-  <div class="below-maps"><p id="hover">Drag to pan · Scroll to zoom</p><label class="raw-display-control">Raw color maximum<input id="rawMax" type="number" min="0.01" step="0.25" value="2"></label></div>
+ <div class="below-maps"><p id="hover">Drag to pan · Scroll to zoom</p><label>Raw color maximum<input id="rawMax" type="number" min="0.01" step="0.25" value="2"></label></div>
 </section>
 <section class="scores" aria-label="Metrics for the visible region">
  <table><thead><tr><th>Visible-region metrics</th><th class="prediction-metric">Overfit prediction</th><th>Distance + DNase</th></tr></thead><tbody><tr><th><abbr title="Mean squared error after clipping both maps, divided by the squared clipping range">MSE</abbr></th><td class="prediction-metric" id="mse">—</td><td id="baseMse">—</td></tr><tr><th>RMSE</th><td class="prediction-metric" id="rmse">—</td><td id="baseRmse">—</td></tr><tr><th>Pearson correlation</th><td class="prediction-metric" id="pcc">—</td><td id="basePcc">—</td></tr></tbody></table>
@@ -61,5 +42,5 @@
 </section>
 
 </main><footer>K562 HiTrAC · Genome-wide observations · Overfit results on fitting regions</footer>
-<script src="data/manifest.js"></script><script src="extension.js"></script><script src="genome.js?v=20261010published"></script><script src="capacity-math.js?v=20260923signals"></script><script src="map-profiles.js?v=20260923signals"></script><script src="dnase-selection.js?v=20260930select"></script><script src="signal-tracks.js?v=20261010published"></script><script src="peak-axes.js?v=20260930peaks"></script><script src="map-colors.js?v=20260930loops"></script><script src="published-loops.js?v=20260930loops"></script><script src="viewer-features.js"></script><script src="published-normalizations.js"></script><script src="viewer-v3.js?v=20261010published"></script>
+<script src="data/manifest.js"></script><script src="extension.js"></script><script src="genome.js?v=20260923signals"></script><script src="capacity-math.js?v=20260923signals"></script><script src="map-profiles.js?v=20260923signals"></script><script src="dnase-selection.js?v=20260930select"></script><script src="signal-tracks.js?v=20260930select"></script><script src="peak-axes.js?v=20260930peaks"></script><script src="map-colors.js?v=20260930loops"></script><script src="published-loops.js?v=20260930loops"></script><script src="viewer-v3.js?v=20260930loops"></script>
 </body></html>
